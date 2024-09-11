@@ -6,3 +6,112 @@
   box-sizing: border-box;
   /* font-family: sans-serif; */
 }
+
+body {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 300px 1fr;
+  grid-template-areas: 
+    'aside content'
+  ;
+}
+
+aside {
+  grid-area: aside;
+  border-right: 1px solid grey;
+}
+.aside__header {
+  height: 5rem;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.374);
+}
+.aside__nav {
+  display: flex;
+  flex-direction: column;
+}
+.aside__nav-links {
+  height: 3rem;
+  padding-left: 2rem;
+  display: flex;
+  align-items: center;
+  color: black;
+  font-weight: 700;
+  /* background-color: antiquewhite; */
+}
+.aside__nav-links:hover {
+  background-color: rgba(234, 223, 223, 0.7);
+}
+.aside__nav-links > img {
+  width: 1.5rem;
+  margin-right: 1rem;
+}
+
+
+main {
+  grid-area: content;
+
+  margin-right: 1rem;
+  display: flex;
+  gap: 1rem;
+  flex-direction: column;
+}
+.content__header {
+  height: 5rem;
+  border: 1px solid grey;
+  border-top: none;
+  border-radius: 0 0 10px 10px;
+}
+.content__table {
+  height: calc(100vh - 5rem - 1rem);
+  padding-bottom: 1rem;
+  display: flex;
+  border: 1px solid grey;
+  border-radius: 10px;
+  overflow: hidden;
+  flex-direction: column;
+}
+.content__table > div:nth-child(2) {
+  overflow-y: auto;
+}
+.content__table div p {
+  display: flex;
+  margin-left: 1rem;
+  align-items: center;
+}
+.content__table-header {
+  padding-block: 1rem;
+  padding-right: 1.1rem;
+  display: grid;
+  grid-template-columns: 2fr 2fr 2fr 1fr 1fr 1fr 2fr;
+  background-color: #A8B2B8;
+}
+.content__table-data {
+  height: 2rem;
+  margin-bottom: 0.5rem;
+  display: grid;
+  grid-template-columns: 2fr 2fr 2fr 1fr 1fr 1fr 2fr;
+}
+.actions-div {
+  height: 100%;
+  padding: .5rem 0 .5rem 1rem;
+  display: flex;
+  gap: .5rem;
+}
+.actions-div button {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 5px;
+  color: aliceblue;
+  border: 1px solid white;
+}
+.actions-div button:first-of-type {background-color: rgb(77, 77, 255);}
+.actions-div button:first-of-type:hover {
+  color: rgb(77, 77, 255);
+  background-color: white;
+  border: 1px solid grey;
+}
+.actions-div button:last-of-type {background-color: rgb(255, 27, 27);}
+.actions-div button:last-of-type:hover {
+  color: rgb(255, 27, 27);
+  background-color: white;
+  border: 1px solid grey;
+}

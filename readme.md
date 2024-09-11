@@ -55,7 +55,7 @@ Before you begin, ensure you have met the following requirements:
 
 4. **Run the Flask application**:
     ```bash
-    flask run
+    pipenv run flask --app run.py run (--debug) << this is optional
     ```
 
 5. **Access the application**:
