@@ -1,0 +1,41 @@
+.content__table-header-students {
+  padding-block: 1rem;
+  padding-right: 1.1rem;
+  display: grid;
+  grid-template-columns: 2fr 2fr 2fr 1fr 1fr 1fr 2fr;
+  background-color: #A8B2B8;
+}
+.content__table-data-students {
+  height: 2rem;
+  margin-bottom: 0.5rem;
+  display: grid;
+  grid-template-columns: 2fr 2fr 2fr 1fr 1fr 1fr 2fr;
+}
+
+.content__table-header-courses {
+  padding-block: 1rem;
+  padding-right: 1.1rem;
+  display: grid;
+  grid-template-columns: 2fr 2fr 1fr 2fr;
+  background-color: #A8B2B8;
+}
+.content__table-data-courses {
+  height: 2rem;
+  margin-bottom: 0.5rem;
+  display: grid;
+  grid-template-columns: 2fr 2fr 1fr 2fr;
+}
+
+.content__table-header-colleges {
+  padding-block: 1rem;
+  padding-right: 1.1rem;
+  display: grid;
+  grid-template-columns: 2fr 1fr 2fr;
+  background-color: #A8B2B8;
+}
+.content__table-data-colleges {
+  height: 2rem;
+  margin-bottom: 0.5rem;
+  display: grid;
+  grid-template-columns: 2fr 1fr 2fr;
+}

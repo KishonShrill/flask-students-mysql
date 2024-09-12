@@ -1,31 +1,19 @@
 {% extends 'base.html' %}
 
 {% block head %}
-  <title>Template</title>
+  <title>Students</title>
 {% endblock %}
-
-
-{% block aside %}
-  <aside>
-    <header class="aside__header"></header>
-    <nav class="aside__nav">
-      <!-- <a class="aside__nav-links" href="#"><img src="../static/images/grid-view-stroke-rounded.svg" alt="Dashboar icon">Dashboard</a> -->
-      <a class="aside__nav-links" href="#"><img src="../static/images/students-stroke-rounded.svg" alt="Students icon">Students</a>
-      <a class="aside__nav-links" href="#"><img src="../static/images/course-stroke-rounded.svg" alt="Courses icon">Programs</a>
-      <a class="aside__nav-links" href="#"><img src="../static/images/school-01-stroke-rounded.svg" alt="College icon">Colleges</a>
-    </nav>
-    <footer class="aside__footer"></footer>
-  </aside>
-{% endblock %}
-
 
 {% block body %}
   <main>
     <header class="content__header">
-
+      <form action="/students/search" method="post">
+        <input type="text" name="query" value="{{ request.form.search }}" placeholder="Search for a student by name">
+        <input type="submit" value="Search">
+      </form>
     </header>
     <div class="content__table">
-      <div class="content__table-header">
+      <div class="content__table-header-students">
         <p>First Name</p>
         <p>Last Name</p>
         <p>ID</p>
@@ -35,20 +23,24 @@
         <p>Actions</p>
       </div>
       <div>
-        {% for student in data %}
-          <div class="content__table-data">
-            <p>{{student[0]}}</p>
-            <p>{{student[1]}}</p>
-            <p>{{student[2]}}</p>
-            <p>{{student[3]}}</p>
-            <p>{{student[4]}}</p>
-            <p>{{student[5]}}</p>
-            <div class="actions-div">
-              <button>Edit</button>
-              <button>Delete</button>
+        {% if results %}
+          {% for student in results %}
+            <div class="content__table-data-students">
+              <p>{{student[0]}}</p>
+              <p>{{student[1]}}</p>
+              <p>{{student[2]}}</p>
+              <p>{{student[3]}}</p>
+              <p>{{student[4]}}</p>
+              <p>{{student[5]}}</p>
+              <div class="actions-div">
+                <button>Edit</button>
+                <button>Delete</button>
+              </div>
             </div>
-          </div>
-        {% endfor %}
+          {% endfor %}
+        {% elif query %}
+          <p>No results found for "{{ query }}".</p>
+        {% endif %}
       </div>
     </div>
   </main>

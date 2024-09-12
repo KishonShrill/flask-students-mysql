@@ -34,19 +34,19 @@ class DatabaseManager(object):
         return result
     
     @classmethod
-    def allColleges(cls):
+    def allCourses(cls):
         cursor = mysql.connection.cursor()
 
-        sql = "SELECT * from college"
+        sql = "SELECT * from course"
         cursor.execute(sql)
         result = cursor.fetchall()
         return result
     
     @classmethod
-    def allCourses(cls):
+    def allColleges(cls):
         cursor = mysql.connection.cursor()
 
-        sql = "SELECT * from course"
+        sql = "SELECT * from college"
         cursor.execute(sql)
         result = cursor.fetchall()
         return result
@@ -65,3 +65,20 @@ class DatabaseManager(object):
             return True
         except:
             return False
+        
+
+    """ WEBSITE THINGS """
+    """ WEBSITE THINGS """
+    """ WEBSITE THINGS """
+
+    @classmethod
+    def queryStudents(cls, args: str):
+        cursor = mysql.connection.cursor()
+        print(args)
+        cursor.execute("""
+            SELECT *
+            FROM student
+            WHERE student.FirstName LIKE %s OR student.LastName LIKE %s
+        """, ('%' + args + '%', '%' + args + '%'))
+        result = cursor.fetchall()
+        return result

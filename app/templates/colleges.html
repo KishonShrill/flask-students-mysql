@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block head %}
+  <title>Progrmas/Courses</title>
+{% endblock %}
+
+{% block body %}
+  <main>
+    <header class="content__header">
+
+    </header>
+    <div class="content__table">
+      <div class="content__table-header-courses">
+        <p>College Name</p>
+        <p>College Code</p>
+        <p>Actions</p>
+      </div>
+      <div>
+        {% for college in data %}
+          <div class="content__table-data-courses">
+            <p>{{college[0]}}</p>
+            <p>{{college[1]}}</p>
+            <div class="actions-div">
+              <button>Edit</button>
+              <button>Delete</button>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </main>
+{% endblock %}
