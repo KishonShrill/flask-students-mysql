@@ -1,9 +1,13 @@
 from flask import render_template, redirect, request, jsonify
 from . import courses_bp
 import app.databaseModel as databaseModel
-# from app.user.forms import UserForm
+from app.forms import SearchForm
+
 
 @courses_bp.route('/programs')
 def index():
+    form = SearchForm()
     courses = databaseModel.DatabaseManager.allCourses()
-    return render_template('programs.html', data=courses, title='Available courses from all colleges')
+    colleges = databaseModel.DatabaseManager.allColleges()
+    form.querySelection.choices = [('', 'Select a College')] + [(college[1], college[0]) for college in colleges]
+    return render_template('programs.html', results=courses, form=form, title='Available courses from all colleges')
