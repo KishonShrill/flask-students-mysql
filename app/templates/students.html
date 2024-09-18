@@ -1,0 +1,93 @@
+{% extends 'master_blueprint/base.html' %}
+
+{% block head %}
+  <title>Students</title>
+{% endblock %}
+
+{% block body %}
+  <main class="relative">
+    <form class="absolute" id="deleteSelectedForm" method="POST" action="/students/delete_checked">{{ searchForm.csrf_token }}</form>
+    <form class="absolute" id="singleDeleteForm" method="POST" action="/students/delete">
+      {{ searchForm.csrf_token }}
+      <input type="hidden" name="student_id" id="student_id">
+    </form>
+    <header class="content__header">
+      <form id="searchForm" class="content__header-form" method="POST" action="/students/search">
+        {{ searchForm.csrf_token }}
+        <div>
+          <button class="delete" id="deleteAll" onclick="deleteAll()" type="submit" form="deleteSelectedForm">Delete All Selected</button>
+          <button class="add">Add New Student</button>
+        </div>
+        <p>{{ searchForm.search }} {{ searchForm.submit }} {{ searchForm.studentSelection }} {{ searchForm.querySelection }} </p>
+      </form>
+    </header>
+    <div class="content__table">
+      <div class="content__table-header-students">
+        <p><input type="checkbox" id="clickAll" onclick="toggleAll(this)"></p>
+        <p><b>First Name</b></p>
+        <p><b>Last Name</b></p>
+        <p><b>ID</b></p>
+        <p><b>Year</b></p>
+        <p><b>Gender</b></p>
+        <p><b>CourseID</b></p>
+        <p><b>Actions</b></p>
+      </div>
+      <div class="content__table-data-wrapper">
+        {% if results %}
+          {% for student in results %}
+            <div class="content__table-data-students">
+              <p><input type="checkbox" class="checkbox" name="items" value="{{ student[2] }}" form="deleteSelectedForm"></p>
+              <p>{{ student[0] }}</p>
+              <p>{{ student[1] }}</p>
+              <p>{{ student[2] }}</p>
+              <p>{{ student[3] }}</p>
+              <p>{{ student[4] }}</p>
+              <p>{{ student[5] }}</p>
+              <div class="actions-div">
+                <button class="edit" onclick="editStudent('{{student[0]}}','{{student[1]}}','{{student[2]}}','{{student[3]}}','{{student[4]}}')">Edit</button>
+                <button class="delete" name="delete" onclick="submitSingleDeleteModal('{{ student[2] }}')">Delete</button>
+              </div>
+            </div>
+          {% endfor %}
+        {% elif query %}
+          <p>No results found for "{{ query }}".</p>
+        {% endif %}
+      </div>
+    </div>
+  </main>
+{% endblock %}
+
+{% block deleteModal %}
+  <dialog data-modal-delete class="modal">
+    <main class="modal__block">
+      <p>Are you sure want to delete?</p>
+      <p>student: <span bold student-number></span></p>
+      <div class="modal__actions">
+        <button class="delete" data-close-modal>Cancel</button>
+        <button class="add" data-close-modal value="" delete-confirmation>Submit</button>
+      </div>
+    </main>
+  </dialog>
+{% endblock %}
+
+{% block editModal %}
+  <dialog data-modal-edit class="modal">
+    <form class="modal__block" id="singleEditForm" method="POST" action="/students/edit">
+      {{ editForm.csrf_token }}
+      <p>Are you sure want to submit new edit?</p>
+      <div class="edit-form">
+        <div><p>First Name:</p>{{ editForm.editFirstName }}</div>
+        <div><p>Last Name:</p>{{ editForm.editLastName }}</div>
+        <div><p>ID:</p>{{ editForm.editID }}</div>
+        <div><p>Year:</p>{{ editForm.editYear }}</div>
+        <div><p>Gender:</p>{{ editForm.editGender }}</div>
+        <div><p>Course: </p>{{ editForm.editCourse }}</div>
+        <input type="hidden" name="student_id-edit" id="student_id-edit" value="">
+      </div>
+      <div class="modal__actions">
+        <button class="delete" data-close-modal>Cancel</button>
+        <button class="add" data-close-modal delete-confirmation onclick="validateID()">Submit</button>
+      </div>
+    </form>
+  </dialog>
+{% endblock %}

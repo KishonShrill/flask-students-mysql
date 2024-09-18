@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'master_blueprint/base.html' %}
 
 {% block head %}
   <title>Progrmas/Courses</title>
@@ -7,27 +7,36 @@
 {% block body %}
   <main>
     <header class="content__header">
-
+      <form class="content__header-form" method="POST" action="/students/search">
+        {{ form.csrf_token }}
+        {{ form.hidden_tag() }}
+        <p>{{ form.search }} {{ form.submit }} {{ form.studentSelection }} {{ form.querySelection }} </p>
+        <div class="actions-div"><button class="add">Add</button></div>
+      </form>
     </header>
     <div class="content__table">
       <div class="content__table-header-courses">
-        <p>Course Name</p>
-        <p>Courses Code</p>
-        <p>College Code</p>
-        <p>Actions</p>
+        <p><b>Course Name</b></p>
+        <p><b>Courses Code</b></p>
+        <p><b>College Code</b></p>
+        <p><b>Actions</b></p>
       </div>
       <div>
-        {% for program in data %}
-          <div class="content__table-data-courses">
-            <p>{{program[0]}}</p>
-            <p>{{program[1]}}</p>
-            <p>{{program[2]}}</p>
-            <div class="actions-div">
-              <button>Edit</button>
-              <button>Delete</button>
+        {% if results %}
+          {% for program in results %}
+            <div class="content__table-data-courses">
+              <p>{{ program[0] }}</p>
+              <p>{{ program[1] }}</p>
+              <p>{{ program[2] }}</p>
+              <div class="actions-div">
+                <button class="edit">Edit</button>
+                <button class="delete">Delete</button>
+              </div>
             </div>
-          </div>
-        {% endfor %}
+          {% endfor %}
+        {% elif query %}
+          <p>No results found for "{{ query }}".</p>
+        {% endif %}
       </div>
     </div>
   </main>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/modern-normalize.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/utils.css') }}">
+    <script type="text/javascript" src="{{ url_for('static', filename='js/design.js' )}}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/activeFunctions.js' )}}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/passiveFunctions.js' )}}"></script>
+    {% block head %}{% endblock %}
+  </head>
+  <body>
+
+    <aside>
+      <header class="aside__header"></header>
+      <nav class="aside__nav">
+        <a class="aside__nav-links" href="/"><img src="{{ url_for('static', filename='images/grid-view-stroke-rounded.svg') }}" alt="Dashboar icon">Dashboard</a>
+        <a class="aside__nav-links" href="/students"><img src="{{ url_for('static', filename='images/students-stroke-rounded.svg' )}}" alt="Students icon">Students</a>
+        <a class="aside__nav-links" href="/programs"><img src="{{ url_for('static', filename='images/course-stroke-rounded.svg') }}" alt="Courses icon">Programs</a>
+        <a class="aside__nav-links" href="/colleges"><img src="{{ url_for('static', filename='images/school-01-stroke-rounded.svg')}}" alt="College icon">Colleges</a>
+      </nav>
+      <footer class="aside__footer"></footer>
+    </aside>
+
+    {% block body %}{% endblock %}
+    {% block deleteModal %}{% endblock %}
+    {% block editModal %}{% endblock %}
+
+  </body>
+</html>
