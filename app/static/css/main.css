@@ -58,9 +58,18 @@ main {
 }
 .content__header {
   height: 5rem;
+  padding-inline: 2rem;
+  display: flex;
+  align-items: center;
   border: 1px solid grey;
   border-top: none;
   border-radius: 0 0 10px 10px;
+}
+.content__header-form {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 .content__table {
   height: calc(100vh - 5rem - 1rem - 1rem);
@@ -77,6 +86,9 @@ main {
   display: flex;
   margin-left: 1rem;
   align-items: center;
+}
+.content__table-data-wrapper {
+  height: 100%;
 }
 
 /* *This has been moved to utils.css  */
@@ -101,23 +113,4 @@ main {
   padding: .5rem 0 .5rem 1rem;
   display: flex;
   gap: .5rem;
-}
-.actions-div button {
-  padding: 0.5rem 1rem;
-  border: none;
-  border-radius: 5px;
-  color: aliceblue;
-  border: 1px solid white;
-}
-.actions-div button:first-of-type {background-color: rgb(77, 77, 255);}
-.actions-div button:first-of-type:hover {
-  color: rgb(77, 77, 255);
-  background-color: white;
-  border: 1px solid grey;
-}
-.actions-div button:last-of-type {background-color: rgb(255, 27, 27);}
-.actions-div button:last-of-type:hover {
-  color: rgb(255, 27, 27);
-  background-color: white;
-  border: 1px solid grey;
 }
