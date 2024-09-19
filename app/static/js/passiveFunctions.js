@@ -1,13 +1,15 @@
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function() {  
   // Modal Configuration
   // Modal Configuration
   // Modal Configuration
-  const closeButton = document.querySelector("[data-close-modal]");
-  const modal = document.querySelector("[data-modal]")
+  const closeButtonDelete = document.querySelector("[data-close-modal-delete]");
+  const closeButtonEdit = document.querySelector("[data-close-modal-edit]");
+  const deleteModal = document.querySelector("[data-modal-delete]")
+  const editModal = document.querySelector("[data-modal-edit]")
 
-  closeButton.addEventListener("click", () => {
-    modal.close()
-  })
+
+  closeButtonDelete.addEventListener("click", () => {deleteModal.close()})
+  closeButtonEdit.addEventListener("click", () => {editModal.close()})
 
 
   // Delete Submission

@@ -4,7 +4,32 @@ function toggleAll(source) {
   
   // Loop through all checkboxes and set their checked property
   checkboxes.forEach(checkbox => {
-      checkbox.checked = source.checked;
+    checkbox.checked = source.checked;
+  });
+  toggleButton()
+}
+
+function toggleButton() {
+  const checkboxes = document.querySelectorAll('.checkbox');
+  const editButtons = document.querySelectorAll('.edit');
+  const deleteButtons = document.querySelectorAll('.delete');
+  const isAnyChecked = Array.from(checkboxes).some(checkbox => checkbox.checked);
+
+  editButtons.forEach(button => {
+    button.disabled = isAnyChecked;
+    if (isAnyChecked) {
+      button.classList.add('disabled');
+    } else {
+        button.classList.remove('disabled');
+    }
+  });
+  deleteButtons.forEach(button => {
+    button.disabled = isAnyChecked;
+    if (isAnyChecked) {
+      button.classList.add('disabled');
+    } else {
+        button.classList.remove('disabled');
+    }
   });
 }
 
