@@ -2,6 +2,15 @@
 
 {% block head %}
   <title>Students</title>
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      {% for msg in messages %}
+        <script>
+          alert('{{msg}}')
+        </script>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
 {% endblock %}
 
 {% block body %}
@@ -36,7 +45,7 @@
         {% if results %}
           {% for student in results %}
             <div class="content__table-data-students">
-              <p><input type="checkbox" class="checkbox" name="items" value="{{ student[2] }}" form="deleteSelectedForm"></p>
+              <p><input type="checkbox" class="checkbox" name="items" value="{{ student[2] }}" onclick="toggleButton()" form="deleteSelectedForm"></p>
               <p>{{ student[0] }}</p>
               <p>{{ student[1] }}</p>
               <p>{{ student[2] }}</p>
@@ -63,7 +72,7 @@
       <p>Are you sure want to delete?</p>
       <p>student: <span bold student-number></span></p>
       <div class="modal__actions">
-        <button class="delete" data-close-modal>Cancel</button>
+        <button class="delete" data-close-modal-delete>Cancel</button>
         <button class="add" data-close-modal value="" delete-confirmation>Submit</button>
       </div>
     </main>
@@ -85,8 +94,8 @@
         <input type="hidden" name="student_id-edit" id="student_id-edit" value="">
       </div>
       <div class="modal__actions">
-        <button class="delete" data-close-modal>Cancel</button>
-        <button class="add" data-close-modal delete-confirmation onclick="validateID()">Submit</button>
+        <button class="delete" data-close-modal-edit>Cancel</button>
+        <button class="add" data-close-modal delete-confirmation form="singleEditForm">Submit</button>
       </div>
     </form>
   </dialog>

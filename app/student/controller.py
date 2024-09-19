@@ -71,8 +71,9 @@ def search():
 
 @student_bp.route('/students/edit/', methods=['POST'])
 def edit():
-    courses = databaseModel.DatabaseManager.allCourses()
+    searchForm = SearchForm()
     editForm = EditForm()
+    courses = databaseModel.DatabaseManager.allCourses()
     editForm.editCourse.choices = [(course[1], course[0]) for course in courses]
     if editForm.validate_on_submit():
         firstname = request.form.get('editFirstName')
@@ -90,7 +91,7 @@ def edit():
     else:
         print(editForm.errors)
         flash(editForm.errors)
-    return redirect(url_for('student.index'))
+        return redirect(url_for('student.index'))
 
 @student_bp.route('/students/delete/', methods=['POST'])
 def delete():
