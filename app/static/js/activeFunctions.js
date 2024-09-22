@@ -1,3 +1,14 @@
+function setSearchForm() {
+  const searchForm = document.getElementById('searchForm');
+  const query = document.getElementById('search').value;
+  const college = document.getElementById('searchCollege').value;
+  const selection = document.getElementById('studentSelection').value;
+  // Set the action URL dynamically with the student ID
+  searchForm.action = "/students/search/sort=" + selection + "?q=" + query + "&college=" + college;
+  // Submit the form
+  searchForm.submit();
+}
+
 function toggleAll(source) {
   // Get all checkboxes with class 'checkbox'
   const checkboxes = document.querySelectorAll('.checkbox');
@@ -33,13 +44,23 @@ function toggleButton() {
   });
 }
 
-function submitSingleDeleteModal(studentId) {
-  const modal = document.querySelector("[data-modal-delete]");
-  const studentLabel = document.querySelector("[student-number]");
-  modal.showModal();
+// function submitSingleDeleteModal(studentId) {
+//   const modal = document.querySelector("[data-modal-delete]");
+//   const studentLabel = document.querySelector("[student-number]");
+//   modal.showModal();
 
-  studentLabel.innerText = studentId;
-  studentLabel.style.fontWeight = "bold";
+//   studentLabel.innerText = studentId;
+//   studentLabel.style.fontWeight = "bold";
+// }
+
+
+function setEditForm(studentId) {
+  const editForm = document.getElementById('singleEditForm');
+  // Set the action URL dynamically with the student ID
+  editForm.action = `/students/edit/${studentId}`;
+  
+  // Submit the form
+  editForm.submit();
 }
 
 function deleteAll() {
@@ -60,26 +81,6 @@ function submitSingleDeleteForm(studentId) {
 
   // Submit the single delete form
   document.getElementById('singleDeleteForm').submit();
-}
-
-function editStudent(firstname, lastname, ID, year, gender) {
-  const editfirstname = document.querySelector('#editFirstName');
-  const editlastname = document.querySelector('#editLastName');
-  const editID = document.querySelector('#editID');
-  const edityear = document.querySelector('#editYear');
-  const editgender = document.querySelector('#editGender');
-
-  const modal = document.querySelector("[data-modal-edit]");
-  modal.showModal();
-
-  console.log(firstname);
-  
-  editfirstname.placeholder = firstname;
-  editlastname.placeholder = lastname;
-  editID.placeholder = ID;
-  edityear.placeholder = year;
-  editgender.placeholder = gender;
-  document.getElementById('student_id-edit').value = ID;
 }
 
 function validateID() {

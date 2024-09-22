@@ -10,6 +10,7 @@ document.addEventListener("DOMContentLoaded", function() {
   navLinks.forEach(link => {
       if (link.getAttribute('href') === currentPath) {
           link.style.backgroundColor = "rgb(0, 154, 0)";
+          link.style.color = "white";
       }
   });
 });

@@ -9,22 +9,29 @@
 
 body {
   height: 100vh;
+  padding-right: 1rem;
   display: grid;
   gap: 1rem;
   grid-template-columns: 300px 1fr;
   grid-template-areas: 
     'aside content'
   ;
+  background-color: #00CB8B;
 }
 
 
 aside {
   grid-area: aside;
   border-right: 1px solid grey;
+  background-color: var(--clr-light);
 }
 .aside__header {
   height: 5rem;
   border-bottom: 1px solid rgba(128, 128, 128, 0.374);
+  background-image: url(../images/logo-banner.jpg);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: 50% 49%;
 }
 .aside__nav {
   display: flex;
@@ -50,8 +57,6 @@ aside {
 
 main {
   grid-area: content;
-
-  margin-right: 1rem;
   display: flex;
   gap: 1rem;
   flex-direction: column;
@@ -64,6 +69,7 @@ main {
   border: 1px solid grey;
   border-top: none;
   border-radius: 0 0 10px 10px;
+  background-color: var(--clr-light);
 }
 .content__header-form {
   width: 100%;
@@ -74,10 +80,11 @@ main {
 .content__table {
   height: calc(100vh - 5rem - 1rem - 1rem);
   display: flex;
+  flex-direction: column;
   border: 1px solid grey;
   border-radius: 10px;
   overflow: hidden;
-  flex-direction: column;
+  background-color: var(--clr-light);
 }
 .content__table > div:nth-child(2) {
   overflow-y: auto;
@@ -87,30 +94,65 @@ main {
   margin-left: 1rem;
   align-items: center;
 }
-.content__table-data-wrapper {
-  height: 100%;
+.content__table-data-wrapper {height: 100%;}
+.gender {
+  padding: 0.25rem 0.5rem;
+  border-radius: 5px;
 }
-
-/* *This has been moved to utils.css  */
-/* *This has been moved to utils.css  */
-/* *This has been moved to utils.css  */
-/* .content__table-header {
-  padding-block: 1rem;
-  padding-right: 1.1rem;
-  display: grid;
-  grid-template-columns: 2fr 2fr 2fr 1fr 1fr 1fr 2fr;
-  background-color: #A8B2B8;
-}
-.content__table-data {
-  height: 2rem;
-  margin-bottom: 0.5rem;
-  display: grid;
-  grid-template-columns: 2fr 2fr 2fr 1fr 1fr 1fr 2fr;
-} */
-
 .actions-div {
   height: 100%;
   padding: .5rem 0 .5rem 1rem;
   display: flex;
   gap: .5rem;
+}
+.actions-div button:hover .icon {
+  color: black;
+  filter: invert(0) brightness(0) saturate(100%);
+}
+
+/* Student Edit Form */
+/* Student Edit Form */
+/* Student Edit Form */
+.edit-form-header {
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #29414F;
+}
+.edit-student {
+  width: clamp(500px, 50%, 800px);
+  padding: 0.5rem;
+  justify-self: center;
+  align-self: center;
+  font-family: "Inter", sans-serif;
+  border-radius: 0.25rem;
+  background-color: aliceblue;
+  z-index: 10;
+}
+.edit-student__block {
+  width: 100%;
+  height: auto;
+  padding-block: 3rem;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+}
+.edit-form-container {
+  width: 90%;
+  margin-block: 1rem;
+  padding-inline: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+.edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+}
+.edit-form-inputs {
+  width: 100%;
+  margin-top: 0.875rem;
+  display: flex;
+  flex-direction: column;
 }
