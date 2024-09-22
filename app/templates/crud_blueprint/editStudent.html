@@ -1,0 +1,65 @@
+{% extends 'master_blueprint/base.html' %}
+
+{% block head %}
+  <title>Edit Student</title>
+{% endblock %}
+
+{% block body %}
+  <main data-modal-edit class="edit-student">
+    <form class="edit-student__block" id="singleEditForm" method="POST" action="/students/edit">
+      {{ editForm.csrf_token }}
+      <div class="edit-form-container">
+        <header class="edit-form-header">
+          <h1>Edit Student Details</h1>
+        </header>
+
+        <main class="edit-form">
+          <div>
+            <span>Name</span>
+            <div style="
+              display: flex;
+              justify-content: space-between;
+              gap: 1rem;
+            ">
+              <div class="edit-form-inputs">
+                {{ editForm.editFirstName }}
+                {{ editForm.editFirstName.label }}
+              </div>
+              <div class="edit-form-inputs">
+                {{ editForm.editLastName }}
+                {{ editForm.editLastName.label }}
+              </div>
+            </div>
+          </div>
+          <div>
+            <span>Student ID</span>
+            <div class="edit-form-inputs">
+              {{ editForm.editID }}
+              {{ editForm.editID.label }}
+            </div>
+          </div>
+          <div>
+            <span>Student Details</span>
+            <div class="edit-form-inputs">
+              {{ editForm.editYear }}
+              {{ editForm.editYear.label }}
+            </div>
+            <div class="edit-form-inputs">
+              {{ editForm.editGender }}
+              {{ editForm.editGender.label }}
+            </div>
+            <div class="edit-form-inputs">
+              {{ editForm.editCourse }}
+              {{ editForm.editCourse.label }}
+            </div>
+            <input type="hidden" name="student_id-edit" id="student_id-edit" value="">
+          </div>
+        </main>
+      </div>
+      <footer class="form__actions">
+        <button class="delete" data-close-modal-edit>Cancel</button>
+        <button class="add" data-close-modal delete-confirmation form="singleEditForm">Submit</button>
+      </footer>
+    </form>
+  </main>
+{% endblock %}

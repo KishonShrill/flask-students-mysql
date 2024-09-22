@@ -2,32 +2,23 @@
 
 {% block head %}
   <title>Students</title>
-  {% with messages = get_flashed_messages() %}
-    {% if messages %}
-      {% for msg in messages %}
-        <script>
-          alert('{{msg}}')
-        </script>
-      {% endfor %}
-    {% endif %}
-  {% endwith %}
 {% endblock %}
 
 {% block body %}
   <main class="relative">
+    <form class="absolute" id="singleEditForm" method="POST" action="">{{ editForm.csrf_token }}</form>
     <form class="absolute" id="deleteSelectedForm" method="POST" action="/students/delete_checked">{{ searchForm.csrf_token }}</form>
-    <form class="absolute" id="singleDeleteForm" method="POST" action="/students/delete">
-      {{ searchForm.csrf_token }}
-      <input type="hidden" name="student_id" id="student_id">
+    <form class="absolute" id="singleDeleteForm" method="POST" action="/students/delete">{{ searchForm.csrf_token }}
+      <input type="hidden" name="student_id-delete" id="student_id">
     </form>
     <header class="content__header">
-      <form id="searchForm" class="content__header-form" method="POST" action="/students/search">
+      <form id="searchForm" class="content__header-form" method="POST" action="">
         {{ searchForm.csrf_token }}
         <div>
-          <button class="delete" id="deleteAll" onclick="deleteAll()" type="submit" form="deleteSelectedForm">Delete All Selected</button>
-          <button class="add">Add New Student</button>
+          <button class="delete" id="deleteAll" onclick="deleteAll()" type="submit" form="deleteSelectedForm">Delete All</button>
+          <button class="add">Add</button>
         </div>
-        <p>{{ searchForm.search }} {{ searchForm.submit }} {{ searchForm.studentSelection }} {{ searchForm.querySelection }} </p>
+        <p>{{ searchForm.search }} <button class="search" onclick="setSearchForm()">Search</button> {{ searchForm.studentSelection }} {{ searchForm.searchCollege }} </p>
       </form>
     </header>
     <div class="content__table">
@@ -50,11 +41,22 @@
               <p>{{ student[1] }}</p>
               <p>{{ student[2] }}</p>
               <p>{{ student[3] }}</p>
-              <p>{{ student[4] }}</p>
+
+              {% if student[4] == 'M' %}
+                <p><span class="gender" style="background-color: rgb(157, 157, 255);">Male</span></p>
+              {% elif student[4] == 'F' %}
+                <p><span class="gender" style="background-color: pink;">Female</span></p>
+              {% elif student[4] == 'NB' %}
+                <p><span class="gender" style="background-color: rgb(38, 255, 129);">Non-Binary</span></p>
+              {% else %}
+                <p>NULL</p>
+              {% endif %}
+
+              <!-- <p>{{ student[4] }}</p> -->
               <p>{{ student[5] }}</p>
               <div class="actions-div">
-                <button class="edit" onclick="editStudent('{{student[0]}}','{{student[1]}}','{{student[2]}}','{{student[3]}}','{{student[4]}}')">Edit</button>
-                <button class="delete" name="delete" onclick="submitSingleDeleteModal('{{ student[2] }}')">Delete</button>
+                <button class="edit" id="student_id-edit" onclick="setEditForm('{{ student[2] }}')"><img class="icon" src="{{ url_for('static', filename='images/pencil-edit-01-stroke-rounded.svg')}}" alt="Edit"></button>
+                <button class="delete" name="delete" onclick="submitSingleDeleteModal('{{ student[2] }}')"><img class="icon" src="{{ url_for('static', filename='images/delete-02-stroke-rounded.svg')}}" alt="Delete"></button>
               </div>
             </div>
           {% endfor %}
@@ -76,27 +78,5 @@
         <button class="add" data-close-modal value="" delete-confirmation>Submit</button>
       </div>
     </main>
-  </dialog>
-{% endblock %}
-
-{% block editModal %}
-  <dialog data-modal-edit class="modal">
-    <form class="modal__block" id="singleEditForm" method="POST" action="/students/edit">
-      {{ editForm.csrf_token }}
-      <p>Are you sure want to submit new edit?</p>
-      <div class="edit-form">
-        <div><p>First Name:</p>{{ editForm.editFirstName }}</div>
-        <div><p>Last Name:</p>{{ editForm.editLastName }}</div>
-        <div><p>ID:</p>{{ editForm.editID }}</div>
-        <div><p>Year:</p>{{ editForm.editYear }}</div>
-        <div><p>Gender:</p>{{ editForm.editGender }}</div>
-        <div><p>Course: </p>{{ editForm.editCourse }}</div>
-        <input type="hidden" name="student_id-edit" id="student_id-edit" value="">
-      </div>
-      <div class="modal__actions">
-        <button class="delete" data-close-modal-edit>Cancel</button>
-        <button class="add" data-close-modal delete-confirmation form="singleEditForm">Submit</button>
-      </div>
-    </form>
   </dialog>
 {% endblock %}
