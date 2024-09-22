@@ -9,5 +9,5 @@ def index():
     form = SearchForm()
     courses = databaseModel.DatabaseManager.allCourses()
     colleges = databaseModel.DatabaseManager.allColleges()
-    form.querySelection.choices = [('', 'Select a College')] + [(college[1], college[0]) for college in colleges]
+    form.searchCollege.choices = [('', 'Select a College')] + [(college[1], college[0]) for college in colleges]
     return render_template('programs.html', results=courses, form=form, title='Available courses from all colleges')

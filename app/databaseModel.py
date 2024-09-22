@@ -205,3 +205,14 @@ class DatabaseManager(object):
         """, ('%' + args + '%',))
         result = cursor.fetchall()
         return result
+    
+    @classmethod
+    def queryCollege(cls, args: str):
+        cursor = mysql.connection.cursor()
+        cursor.execute("""
+            SELECT *
+            FROM student
+            WHERE student.coursecode = %s
+        """, (args,))
+        result = cursor.fetchall()
+        return result
