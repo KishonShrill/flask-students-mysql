@@ -9,6 +9,7 @@
     <script type="text/javascript" src="{{ url_for('static', filename='js/design.js' )}}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/activeFunctions.js' )}}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/passiveFunctions.js' )}}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/setFormFunctions.js' )}}"></script>
     {% block head %}{% endblock %}
   </head>
   <body>
@@ -53,7 +54,7 @@
     </aside>
 
     {% block body %}{% endblock %}
-    {% block deleteModal %}{% endblock %}
+    {% block confirmationModal %}{% endblock %}
     {% block alertsOverlay %}{% endblock %}
 
   </body>

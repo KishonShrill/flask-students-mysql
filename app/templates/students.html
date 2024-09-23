@@ -56,7 +56,7 @@
               <p>{{ student[5] }}</p>
               <div class="actions-div">
                 <button class="edit" id="student_id-edit" onclick="setEditForm('{{ student[2] }}')"><img class="icon" src="{{ url_for('static', filename='images/pencil-edit-01-stroke-rounded.svg')}}" alt="Edit"></button>
-                <button class="delete" name="delete" onclick="submitSingleDeleteModal('{{ student[2] }}')"><img class="icon" src="{{ url_for('static', filename='images/delete-02-stroke-rounded.svg')}}" alt="Delete"></button>
+                <button class="delete" name="delete" onclick="confirmationModal('{{ student[2] }}', 'singleDelete')"><img class="icon" src="{{ url_for('static', filename='images/delete-02-stroke-rounded.svg')}}" alt="Delete"></button>
               </div>
             </div>
           {% endfor %}
@@ -68,11 +68,11 @@
   </main>
 {% endblock %}
 
-{% block deleteModal %}
+{% block confirmationModal %}
   <dialog data-modal-delete class="modal">
-    <main class="modal__block">
+    <main>
       <p>Are you sure want to delete?</p>
-      <p>student: <span bold student-number></span></p>
+      <p style="text-align: center;">student: <span bold student-number></span></p>
       <div class="modal__actions">
         <button class="delete" data-close-modal-delete>Cancel</button>
         <button class="add" data-close-modal value="" delete-confirmation>Submit</button>
@@ -87,16 +87,22 @@
       {% if messages %}
         {% for category, message in messages %}
           <div class="alert alert-{{ category }}" role="alert">
+            <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+            {% if category == "danger" %}
+              <strong>Danger!</strong>
+            {% elif category == "warning" %}
+              <strong>Warning!</strong>
+            {% elif category == "info" %}
+              <strong>Info!</strong>
+            {% elif category == "success" %}
+              <strong>Success!</strong>
+            {% else %}
+              <strong>%NULL%</strong>
+            {% endif %}
             {{ message }}
           </div>
         {% endfor %}   
       {% endif %}
     {% endwith %}
-  
-    <div class="alert alert-warning">
-      <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
-      <strong>Warning!</strong>
-      This is an alert box.
-    </div>
   </div>
 {% endblock %}

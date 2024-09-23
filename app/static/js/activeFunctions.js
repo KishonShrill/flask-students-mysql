@@ -1,14 +1,3 @@
-function setSearchForm() {
-  const searchForm = document.getElementById('searchForm');
-  const query = document.getElementById('search').value;
-  const college = document.getElementById('searchCollege').value;
-  const selection = document.getElementById('studentSelection').value;
-  // Set the action URL dynamically with the student ID
-  searchForm.action = "/students/search/sort=" + selection + "?q=" + query + "&college=" + college;
-  // Submit the form
-  searchForm.submit();
-}
-
 function toggleAll(source) {
   // Get all checkboxes with class 'checkbox'
   const checkboxes = document.querySelectorAll('.checkbox');
@@ -44,24 +33,18 @@ function toggleButton() {
   });
 }
 
-// function submitSingleDeleteModal(studentId) {
-//   const modal = document.querySelector("[data-modal-delete]");
-//   const studentLabel = document.querySelector("[student-number]");
-//   modal.showModal();
+function confirmationModal(studentId, category) {
+  console.log(studentId + ":" + category);
+  if (category == "singleDelete") {
+    const modal = document.querySelector("[data-modal-delete]");
+    const studentLabel = document.querySelector("[student-number]");
+    modal.showModal();
 
-//   studentLabel.innerText = studentId;
-//   studentLabel.style.fontWeight = "bold";
-// }
-
-
-function setEditForm(studentId) {
-  const editForm = document.getElementById('singleEditForm');
-  // Set the action URL dynamically with the student ID
-  editForm.action = `/students/edit/${studentId}`;
-  
-  // Submit the form
-  editForm.submit();
+    studentLabel.innerText = studentId;
+    studentLabel.style.fontWeight = "bold";
+  }
 }
+
 
 function deleteAll() {
   e.preventDefault();

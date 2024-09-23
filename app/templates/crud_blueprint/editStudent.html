@@ -1,12 +1,13 @@
 {% extends 'master_blueprint/base.html' %}
 
 {% block head %}
+  <script type="text/javascript" src="{{ url_for('static', filename='js/editStudent.js' )}}"></script>
   <title>Edit Student</title>
 {% endblock %}
 
 {% block body %}
   <main data-modal-edit class="edit-student">
-    <form class="edit-student__block" id="singleEditForm" method="POST" action="/students/edit">
+    <form class="edit-student__block" id="editStudentForm" method="POST" action="">
       {{ editForm.csrf_token }}
       <div class="edit-form-container">
         <header class="edit-form-header">
@@ -52,14 +53,44 @@
               {{ editForm.editCourse }}
               {{ editForm.editCourse.label }}
             </div>
-            <input type="hidden" name="student_id-edit" id="student_id-edit" value="">
+            <input type="hidden" name="student_id-edit" id="student_id-edit" value="{{ student_id }}">
           </div>
         </main>
       </div>
-      <footer class="form__actions">
-        <button class="delete" data-close-modal-edit>Cancel</button>
-        <button class="add" data-close-modal delete-confirmation form="singleEditForm">Submit</button>
-      </footer>
     </form>
+    <footer class="form__actions">
+      <button class="delete" onclick="location.href='/students';">Cancel</button>
+      <button class="add disabled" name="confirmEdit" editSubmit-confirmation onclick="confirmationModal(document.getElementById('editID').value, 'singleDelete')" disabled>Submit
+        <span class="tooltiptext">There are no changes...</span>
+      </button>
+    </footer>
   </main>
+{% endblock %}
+
+{% block confirmationModal %}
+  <dialog data-modal-delete class="modal">
+    <main>
+      <p>Are you sure want to proceed with the update?</p>
+      <p style="text-align: center;">student: <span bold student-number></span></p>
+
+      <div class="modal__actions">
+        <button class="delete" data-close-modal-delete>Cancel</button>
+        <button class="add" value="" delete-confirmation onclick="setEditSubmitForm()">Confirm</button>
+      </div>
+    </main>
+  </dialog>
+{% endblock %}
+
+{% block alertsOverlay %}
+  <div class="alert-container absolute">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }}" role="alert">
+            {{ message }}
+          </div>
+        {% endfor %}   
+      {% endif %}
+    {% endwith %}
+  </div>
 {% endblock %}

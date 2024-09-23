@@ -119,10 +119,13 @@ main {
   border-bottom: 1px solid #29414F;
 }
 .edit-student {
-  width: clamp(500px, 50%, 800px);
-  padding: 0.5rem;
   justify-self: center;
   align-self: center;
+  width: clamp(500px, 50%, 800px);
+  padding: calc(0.5rem + 3rem) 0.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   font-family: "Inter", sans-serif;
   border-radius: 0.25rem;
   background-color: aliceblue;
@@ -131,7 +134,6 @@ main {
 .edit-student__block {
   width: 100%;
   height: auto;
-  padding-block: 3rem;
   margin: 0;
   display: flex;
   flex-direction: column;

@@ -5,6 +5,7 @@ from app.forms import *
 
 
 @student_bp.route('/students')
+@student_bp.route('/students/')
 def index():
     searchForm = SearchForm()
     editForm = EditForm()
@@ -76,19 +77,13 @@ def search(choices):
         print("Did I go here?")
         return redirect(url_for("student.index"))
 
-# @student_bp.route('/students/practice/', methods=['POST','GET'])
-# def practice():
-#     name = request.args.get('name')
-#     age = request.args.get('age')
-#     return f'Hello, {name}! You are {age} years old.'
-
-
 # CRUDL CONTROLLERS
 # CRUDL CONTROLLERS
 # CRUDL CONTROLLERS
 
-@student_bp.route('/students/edit/<student_id>', methods=['POST'])
+@student_bp.route('/students/edit/id=<student_id>', methods=['POST','GET'])
 def edit(student_id):
+    student_id = student_id or request.args.get('id')
     student = databaseModel.DatabaseManager.queryStudentID(student_id)
     print(student)
     if student:
@@ -105,49 +100,61 @@ def edit(student_id):
 
         editForm.editCourse.data = student[0][5]  # Assuming student[5] is the current course code
 
-        return render_template('./crud_blueprint/editStudent.html', editForm=editForm)
+        return render_template('./crud_blueprint/editStudent.html', editForm=editForm, student_id=student_id)
     
     else:
         return redirect(url_for('student.index'))
 
-@student_bp.route('/students/edit/<student_id>/submit', methods=['POST'])
+@student_bp.route('/students/edit/<student_id>/submit', methods=['POST','GET'])
 def editSubmit(student_id):
     if request.method == "POST":
-        ...
+        oldID = request.form.get('student_id-edit')
 
+        newFirstName = request.form.get('editFirstName')
+        newLastName = request.form.get('editLastName')
+        newID = request.form.get('editID')
+        newYear = request.form.get('editYear')
+        newGender = request.form.get('editGender')
+        newCourse = request.form.get('editCourse')
 
+        print(f"Old Student ID: {oldID}, FirstName: {newFirstName}, LastName: {newLastName}, newID: {newID}, Year: {newYear}, Gender: {newGender}, Course: {newCourse}")
+        databaseModel.DatabaseManager.editStudent(oldID, newFirstName, newLastName, newID, newYear, newGender, newCourse)
 
-
-
-
-
-@student_bp.route('/students/delete/', methods=['POST'])
-def delete():
-    delete_item = request.form.get('student_id-delete')
-    print(f"Student to delete: {delete_item}")
-    return redirect(url_for('student.index'))
+        flash(f"Student {newID} has been updated successfully!", "success")
+        return redirect(url_for('student.index'))
     
-@student_bp.route('/students/delete_checked/', methods=['POST'])
-def delete_checked():
-    # Get the list of checked items from the searchForm
-    checked_items = request.form.getlist('items')
+    if request.method == "GET":
+        flash("You are not allowed to do that!", "danger")
+        return redirect(url_for('student.index'))
+
+
+
+
+
+
+
+# @student_bp.route('/students/delete/', methods=['POST'])
+# def delete():
+#     delete_item = request.form.get('student_id-delete')
+#     print(f"Student to delete: {delete_item}")
+#     return redirect(url_for('student.index'))
     
-    # Print the checked items to the console (or do something else like delete them from the database)
-    print(f"Checked items for deletion: {checked_items}")
+# @student_bp.route('/students/delete_checked/', methods=['POST'])
+# def delete_checked():
+#     # Get the list of checked items from the searchForm
+#     checked_items = request.form.getlist('items')
+    
+#     # Print the checked items to the console (or do something else like delete them from the database)
+#     print(f"Checked items for deletion: {checked_items}")
 
-    # Assuming you have a SQLAlchemy model to interact with the database
-    # for item in checked_items:
-        # Query the database and delete the item
-        # Example (assuming item represents an ID):
-        # MyModel.query.filter_by(id=item).delete()
+#     # Assuming you have a SQLAlchemy model to interact with the database
+#     # for item in checked_items:
+#         # Query the database and delete the item
+#         # Example (assuming item represents an ID):
+#         # MyModel.query.filter_by(id=item).delete()
 
-    # Commit the changes to the database
-    # db.session.commit()
+#     # Commit the changes to the database
+#     # db.session.commit()
 
-    # Redirect back to the main page (or show a confirmation page)
-    return redirect(url_for('student.index'))
-
-
-# @student_bp.route('/students/search/<query>')
-# def query(choices, query, searchForm):
-#     return render_template('students.html', results=results, query=query, searchForm=searchForm, title='Query of Students')
+#     # Redirect back to the main page (or show a confirmation page)
+#     return redirect(url_for('student.index'))

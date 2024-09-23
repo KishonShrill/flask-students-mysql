@@ -2,12 +2,25 @@
   --clr-light: white;
 }
 
+/* Modal Styles */
+/* Modal Styles */
+/* Modal Styles */
+
+.modal {
+  padding: 2rem;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.modal__actions {
+  display: flex;
+  justify-content: space-between;
+}
+
 /* Alert Styles */
 /* Alert Styles */
 /* Alert Styles */
 .alert-container {
-  width: 300px;
-  height: 300px;
   right: 1rem;
   top: 1rem;
   overflow: hidden; /* Hide anything that overflows during animation */
@@ -115,6 +128,7 @@
 button.add,
 button.edit,
 button.delete {
+  position: relative;
   height: 2.2744rem;
   padding: 0.5rem 1rem;
   border: none;
@@ -157,17 +171,22 @@ button.disabled {
 .absolute {position: absolute;}
 
 button,
-input#clickAll,
-input#search,
-input.checkbox,
+input,
 select {
-  cursor: pointer;
   height: 45px;
   padding: 0.625em;
   border-radius: 4px;
   border-width: 1px;
   border-style: solid;
   border-color: #b8bdc9;
+}
+
+button,
+input#clickAll,
+input#search,
+input.checkbox,
+select {
+  cursor: pointer;
 }
 
 input#search {
@@ -185,4 +204,37 @@ label {
   margin-top: 2rem;
   display: flex;
   justify-content: space-between;
+}
+
+/* Tooltip Styles */
+/* Tooltip Styles */
+/* Tooltip Styles */
+.tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  
+  /* Position the tooltip */
+  position: absolute;
+  z-index: 1;
+  bottom: 150%;
+  left: 50%;
+  margin-left: -60px;
+}
+.tooltiptext::after {
+  content: '';
+  position: absolute;
+  transform: rotateZ(45deg);
+  bottom: -5px;
+  left: 50%;
+  margin-left: -6px;
+  border: 5px solid black;
+
+}
+button[name="confirmEdit"]:hover .tooltiptext {
+  visibility: visible;
 }
