@@ -23,17 +23,50 @@ class DatabaseManager(object):
             mysql.connection.rollback()
 
     """ UPDATE METHOD """
+    # @classmethod
+    # def editStudent(cls, oldID, newFirstName, newLastName, newID, newYear, newGender, newCourse):
+    #     try:
+    #         cursor = mysql.connection.cursor()
+    #         cursor.execute("""
+    #             UPDATE student 
+    #             SET FirstName = %s, LastName = %s, ID = %s, YearLevel = %s, Gender = %s, CourseCode = %s
+    #             WHERE ID = %s
+    #         """, (newFirstName, newLastName, newID, newYear, newGender, newCourse, oldID))
+    #         mysql.connection.commit()
+    #         return True
+    #     except Exception as e:
+    #         print(f"Error updating student: {e}")
+    #         mysql.connection.rollback()
+    #         return False
+        
     @classmethod
-    def editStudent(cls, oldID, newFirstName, newLastName, newID, newYear, newGender, newCourse):
+    def editStudent(cls, oldID, newFirstName, newLastName, newID, newYear, newGender, newCourse: str):
         try:
             cursor = mysql.connection.cursor()
-            cursor.execute("""
-                UPDATE student 
-                SET FirstName = %s, LastName = %s, ID = %s, YearLevel = %s, Gender = %s, CourseCode = %s
-                WHERE ID = %s
-            """, (newFirstName, newLastName, newID, newYear, newGender, newCourse, oldID))
+
+            # If newCourse is None, set it to NULL in the query
+            if newCourse == "None":
+                query = """
+                    UPDATE student 
+                    SET FirstName = %s, LastName = %s, ID = %s, YearLevel = %s, Gender = %s, CourseCode = NULL
+                    WHERE ID = %s
+                """
+                values = (newFirstName, newLastName, newID, newYear, newGender, oldID)
+                print("NEVEERRR")
+            else:
+                query = """
+                    UPDATE student 
+                    SET FirstName = %s, LastName = %s, ID = %s, YearLevel = %s, Gender = %s, CourseCode = %s
+                    WHERE ID = %s
+                """
+                values = (newFirstName, newLastName, newID, newYear, newGender, newCourse, oldID)
+                print("YES")
+
+
+            cursor.execute(query, values)
             mysql.connection.commit()
             return True
+
         except Exception as e:
             print(f"Error updating student: {e}")
             mysql.connection.rollback()

@@ -12,13 +12,13 @@ class SearchForm(FlaskForm):
                                                             ('id', 'School ID'), ('yearlevel', 'Year'), 
                                                             ('gender', 'Gender')])
     
-class EditForm(FlaskForm):
+class StudentForm(FlaskForm):
     # Edit Form
-    editFirstName = StringField('First Name', validators=[DataRequired()])
-    editLastName = StringField('Last Name', validators=[DataRequired()])
-    editID = StringField('Please enter a valid ID number.', validators=[
+    studentFirstName = StringField('First Name', validators=[DataRequired()])
+    studentLastName = StringField('Last Name', validators=[DataRequired()])
+    studentID = StringField('Please enter a valid ID number.', validators=[
         DataRequired(),
-        Regexp(r'^\d{4}-\d{4}$', message="Valid ID is 4 first numbers, a hyphen, and 4 last numbers")])
-    editYear = SelectField('Year Level', choices=[1,2,3,4,5,6] ,validators=[DataRequired()])
-    editGender = SelectField('Select a gender', choices=["M", "F", "NB"], validators=[DataRequired()])
-    editCourse = SelectField('Select a course', choices = [])
+        Length(min=9, max=9)])
+    studentYear = SelectField('Year Level', choices=[1,2,3,4,5,6] ,validators=[DataRequired()])
+    studentGender = SelectField('Select a gender', choices=["M", "F", "NB"], validators=[DataRequired()])
+    studentCourse = SelectField('Select a course', choices = [], validators=[DataRequired()])

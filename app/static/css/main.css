@@ -113,12 +113,12 @@ main {
 /* Student Edit Form */
 /* Student Edit Form */
 /* Student Edit Form */
-.edit-form-header {
+.crud-form-header {
   margin-bottom: 1rem;
   padding-bottom: 1rem;
   border-bottom: 1px solid #29414F;
 }
-.edit-student {
+.crud-student {
   justify-self: center;
   align-self: center;
   width: clamp(500px, 50%, 800px);
@@ -131,7 +131,7 @@ main {
   background-color: aliceblue;
   z-index: 10;
 }
-.edit-student__block {
+.crud-student__block {
   width: 100%;
   height: auto;
   margin: 0;
@@ -140,19 +140,19 @@ main {
   align-items: center;
   justify-content: space-between;
 }
-.edit-form-container {
+.crud-form-container {
   width: 90%;
   margin-block: 1rem;
   padding-inline: 1rem;
   display: flex;
   flex-direction: column;
 }
-.edit-form {
+.crud-form {
   display: flex;
   flex-direction: column;
   gap: 3rem;
 }
-.edit-form-inputs {
+.crud-form-inputs {
   width: 100%;
   margin-top: 0.875rem;
   display: flex;

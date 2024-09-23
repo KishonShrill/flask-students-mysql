@@ -11,30 +11,29 @@ function toggleAll(source) {
 
 function toggleButton() {
   const checkboxes = document.querySelectorAll('.checkbox');
-  const editButtons = document.querySelectorAll('.edit');
-  const deleteButtons = document.querySelectorAll('.delete');
+  const actionButtons = document.querySelectorAll('.action');
+  const deleteAllBtn = document.querySelector('#deleteAll');
   const isAnyChecked = Array.from(checkboxes).some(checkbox => checkbox.checked);
 
-  editButtons.forEach(button => {
+  actionButtons.forEach(button => {
     button.disabled = isAnyChecked;
     if (isAnyChecked) {
       button.classList.add('disabled');
     } else {
-        button.classList.remove('disabled');
+      button.classList.remove('disabled');
     }
   });
-  deleteButtons.forEach(button => {
-    button.disabled = isAnyChecked;
-    if (isAnyChecked) {
-      button.classList.add('disabled');
-    } else {
-        button.classList.remove('disabled');
-    }
-  });
+
+  if (isAnyChecked) {
+    deleteAllBtn.removeAttribute("hidden");
+  } else {
+    deleteAllBtn.setAttribute("hidden", "hidden");
+  }
 }
 
 function confirmationModal(studentId, category) {
   console.log(studentId + ":" + category);
+
   if (category == "singleDelete") {
     const modal = document.querySelector("[data-modal-delete]");
     const studentLabel = document.querySelector("[student-number]");
@@ -42,6 +41,18 @@ function confirmationModal(studentId, category) {
 
     studentLabel.innerText = studentId;
     studentLabel.style.fontWeight = "bold";
+  }
+
+  if (category == "singleEdit") {
+    const isValidated = validateStudent();
+    if (isValidated) {
+      const modal = document.querySelector("[data-modal-delete]");
+      const studentLabel = document.querySelector("[student-number]");
+      modal.showModal();
+
+      studentLabel.innerText = studentId;
+      studentLabel.style.fontWeight = "bold";
+    }
   }
 }
 
@@ -58,26 +69,25 @@ function deleteAll() {
   });
 }
 
-function submitSingleDeleteForm(studentId) {
-  // Set the hidden input's value to the student's ID
-  document.getElementById('student_id').value = studentId;
+function validateStudent() {
+  const fnInput = document.getElementById('studentFirstName');
+  const lnInput = document.getElementById('studentLastName');
+  const idInput = document.getElementById('studentID');
+  const regexName = /^[A-Za-z\s]+$/;
+  const regexID = /^\d{4}-\d{4}$/;
 
-  // Submit the single delete form
-  document.getElementById('singleDeleteForm').submit();
-}
-
-function validateID() {
-  const idInput = document.getElementById('editID');
-  const regex = /^\d{4}-\d{4}$/;
-
-  if (!regex.test(idInput.value)) {
-      // idError.style.display = 'inline'; // Show the error message
-      idInput.setCustomValidity("Invalid format. Must be 4 digits, a hyphen, and 4 digits.");
+  if (!regexName.test(fnInput.value)) {
+      alert("Invalid format for First Name. Only letters and spaces are allowed.");
       return false; // Prevent form submission
-  } else {
-      // idError.style.display = 'none'; // Hide the error message
-      idInput.setCustomValidity("")
-      document.getElementById('singleEditForm').submit();
-      return true; // Allow form submission
   }
+  if (!regexName.test(lnInput.value)) {
+    alert("Invalid format for Last Name. Only letters and spaces are allowed.");
+    return false; // Prevent form submission
+  }
+  if (!regexID.test(idInput.value)) {
+    alert("Invalid format for Student ID. Must be in the format 1234-5678.");
+    return false; // Prevent form submission
+  }
+  
+  return true;
 }

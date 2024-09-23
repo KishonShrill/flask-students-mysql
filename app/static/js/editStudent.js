@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
   const confirmButton = document.querySelector('.add[editSubmit-confirmation]'); // The confirm button
   const editForm = document.getElementById('editStudentForm'); // The form element
+  const tooltip = document.getElementById('edit-confirm-tooltip');
   let initialFormData = new FormData(editForm); // Get the initial form data
 
   // Disable the confirm button initially
@@ -22,9 +23,11 @@ document.addEventListener('DOMContentLoaded', function() {
       if (checkFormChanges()) {
           confirmButton.disabled = false;
           confirmButton.classList.remove('disabled');
+          tooltip.style.display = "none";
       } else {
           confirmButton.disabled = true;
           confirmButton.classList.add('disabled');
+          tooltip.style.display = "block";
       }
   });
 });
