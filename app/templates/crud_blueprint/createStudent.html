@@ -3,7 +3,7 @@
 {% block head %}
   <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}"> 
   <script type="text/javascript" src="{{ url_for('static', filename='js/editStudent.js' )}}"></script>
-  <title>Edit Student</title>
+  <title>Create Student</title>
 {% endblock %}
 
 {% block body %}
@@ -12,7 +12,7 @@
       {{ studentForm.csrf_token }}
       <div class="crud-form-container">
         <header class="crud-form-header">
-          <h1>Edit Student Details</h1>
+          <h1>Create Student Details</h1>
         </header>
 
         <main class="crud-form">
@@ -54,15 +54,14 @@
               {{ studentForm.studentCourse }}
               {{ studentForm.studentCourse.label }}
             </div>
-            <input type="hidden" name="student_id-edit" id="student_id-edit" value="{{ student_id }}">
           </div>
         </main>
       </div>
     </form>
     <footer class="form__actions">
       <button class="delete" onclick="location.href='/students';">Cancel</button>
-      <button class="add disabled" name="confirmEdit" editSubmit-confirmation onclick="confirmationModal(document.getElementById('studentID').value, 'singleEdit')" disabled>Submit
-        <span class="tooltiptext" id="edit-confirm-tooltip">There are no changes...</span>
+      <button class="add disabled" name="confirmEdit" editSubmit-confirmation onclick="" disabled>Submit
+        <span class="tooltiptext">There are no changes...</span>
       </button>
     </footer>
   </main>
