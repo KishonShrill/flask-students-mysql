@@ -80,3 +80,23 @@
     </main>
   </dialog>
 {% endblock %}
+
+{% block alertsOverlay %}
+  <div class="alert-container absolute">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }}" role="alert">
+            {{ message }}
+          </div>
+        {% endfor %}   
+      {% endif %}
+    {% endwith %}
+  
+    <div class="alert alert-warning">
+      <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+      <strong>Warning!</strong>
+      This is an alert box.
+    </div>
+  </div>
+{% endblock %}
