@@ -21,3 +21,10 @@ function setEditSubmitForm() {
   editForm.action = window.location.pathname + "/submit";
   editForm.submit();
 }
+
+function submitSingleDeleteForm() {
+  // Set the hidden input's value to the student's ID
+  document.getElementById('student_id-delete').value = document.querySelector("[student-number]").innerHTML;
+  // Submit the single delete form
+  document.getElementById('singleDeleteForm').submit();
+}

@@ -24,9 +24,11 @@ def create_app(test_config=None):
     # def index():
     #     return "LETS DO THIS SHITTassdfasdf"
 
+    from .home import homepage_bp as homepage_blueprint
     from .student import student_bp as student_blueprint
     from .programs import courses_bp as program_blueprint
     from .college import college_bp as colleges_blueprint
+    app.register_blueprint(homepage_blueprint)
     app.register_blueprint(student_blueprint)
     app.register_blueprint(program_blueprint)
     app.register_blueprint(colleges_blueprint)
