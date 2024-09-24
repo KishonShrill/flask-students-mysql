@@ -12,9 +12,9 @@ def index():
     studentForm = StudentForm()
     courses = databaseModel.DatabaseManager.allCourses()
     students = databaseModel.DatabaseManager.allStudents()
-    searchForm.searchCollege.choices = [('', 'Select a Course')] + [(course[1], course[0]) for course in courses]
+    searchForm.searchCourse.choices = [('', 'Select a Course')] + [(course[1], course[0]) for course in courses]
     studentForm.studentCourse.choices = [(course[1], course[0]) for course in courses]
-    return render_template('students.html', results=students, searchForm=searchForm, studentForm=studentForm, title='List of Students')
+    return render_template('students.html', results=students, searchForm=searchForm, studentForm=studentForm)
 
 
 
@@ -26,10 +26,10 @@ def search(choices):
     
     choices = choices or request.args.get('sort')
     query = request.form.get('search') or request.args.get('q')
-    college = request.form.get('searchCollege') or request.args.get('college')
+    college = request.form.get('searchCourse') or request.args.get('college')
     print(f"Choices: {choices} and College: {college} and Query: {query}")
 
-    searchForm.searchCollege.choices = [('', 'Select a Course')] + [(course[1], course[0]) for course in courses]
+    searchForm.searchCourse.choices = [('', 'Select a Course')] + [(course[1], course[0]) for course in courses]
     studentForm.studentCourse.choices = [(course[1], course[0]) for course in courses]
     
     if query:

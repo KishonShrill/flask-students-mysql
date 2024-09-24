@@ -317,3 +317,36 @@ class DatabaseManager(object):
         cursor.execute(query)
         result = cursor.fetchall()
         return result
+    
+    @classmethod
+    def countStudents(cls):
+        try:
+            cursor = mysql.connection.cursor()
+            cursor.execute("SELECT COUNT(*) FROM student")
+            result = cursor.fetchone()
+            return result[0]  # Return the count from the result
+        except Exception as e:
+            print(f"Error counting students: {e}")
+            return 0
+        
+    @classmethod
+    def countPrograms(cls):
+        try:
+            cursor = mysql.connection.cursor()
+            cursor.execute("SELECT COUNT(*) FROM course")
+            result = cursor.fetchone()
+            return result[0]  # Return the count from the result
+        except Exception as e:
+            print(f"Error counting students: {e}")
+            return 0
+        
+    @classmethod
+    def countColleges(cls):
+        try:
+            cursor = mysql.connection.cursor()
+            cursor.execute("SELECT COUNT(*) FROM college")
+            result = cursor.fetchone()
+            return result[0]  # Return the count from the result
+        except Exception as e:
+            print(f"Error counting students: {e}")
+            return 0

@@ -20,7 +20,7 @@
           <button class="delete" hidden="hidden" id="deleteAll" onclick="deleteAll()" type="submit" form="deleteSelectedForm">Delete All</button>
           <button class="add action" type="submit" form="createForm">Add</button>
         </div>
-        <p>{{ searchForm.search }} <button class="search" onclick="setSearchForm()">Search</button> {{ searchForm.studentSelection }} {{ searchForm.searchCollege }} </p>
+        <p>{{ searchForm.search }} <button class="search" onclick="setSearchForm()">Search</button> {{ searchForm.studentSelection }} {{ searchForm.searchCourse }} </p>
       </form>
     </header>
     <div class="content__table">
@@ -54,7 +54,11 @@
                 <p>NULL</p>
               {% endif %}
 
-              <p>{{ student[5] }}</p>
+              {% if student[5] == None %}
+                <p><span class="highlight" style="background-color: rgb(255, 38, 38); color: aliceblue;">N/A</span></p>
+              {% else %}
+                <p>{{ student[5] }}</p>
+              {% endif %}
 
               <div class="actions-div">
                 <button class="edit action" id="student_id-edit" onclick="setEditForm('{{ student[2] }}')"><img class="icon" src="{{ url_for('static', filename='images/pencil-edit-01-stroke-rounded.svg')}}" alt="Edit"></button>

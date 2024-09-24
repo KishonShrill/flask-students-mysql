@@ -1,7 +1,7 @@
 {% extends 'master_blueprint/base.html' %}
 
 {% block head %}
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/homepage.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
   <title>Homepage - SSIS</title>
 {% endblock %}
 
@@ -11,21 +11,17 @@
   </div>
 
   <main>
-    <header class="header-container">
-      <img src="{{ url_for('static', filename='images/logo-dp.jpg') }}" alt="SSIS System Logo">
-      <nav>
-        <ul class="header__menu">
-          <li>
-            <a href="/students">Students</a>
-          </li>
-          <li>
-            <a href="/programs">Programs</a>
-          </li>
-          <li>
-            <a href="/colleges">Colleges</a>
-          </li>
-        </ul>
-      </nav>
-    </header>
+    <section>
+      <h1>Overview</h1>
+      <main>
+        <div></div>
+        <div></div>
+        <div></div>
+      </main>
+    </section>
+
+    <section>
+      <h1>Recent Additions  </h1>
+    </section>
   </main>
 {% endblock %}

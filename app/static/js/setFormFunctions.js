@@ -1,10 +1,10 @@
 function setSearchForm() {
   const searchForm = document.getElementById('searchForm');
   const query = document.getElementById('search').value;
-  const college = document.getElementById('searchCollege').value;
+  const course = document.getElementById('searchCourse').value;
   const selection = document.getElementById('studentSelection').value;
 
-  searchForm.action = "/students/search/sort=" + selection + "?q=" + query + "&college=" + college;
+  searchForm.action = "/students/search/sort=" + selection + "?q=" + query + "&college=" + course;
   searchForm.submit();
 }
 

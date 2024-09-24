@@ -2,21 +2,24 @@
 
 {% block head %}
   <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}"> 
-  <title>Progrmas/Courses</title>
+  <title>Current established colleges inside MSU-IIT</title>
 {% endblock %}
 
 {% block body %}
   <main>
     <header class="content__header">
-      <form class="content__header-form" method="POST" action="/students/search">
-        {{ form.csrf_token }}
-        {{ form.hidden_tag() }}
-        <p>{{ form.search }} {{ form.submit }} {{ form.studentSelection }} </p>
-        <div class="actions-div"><button class="add">Add</button></div>
+      <form id="searchForm" class="content__header-form" method="POST" action="">
+        {{ searchForm.csrf_token }}
+        <div>
+          <button class="delete" hidden="hidden" id="deleteAll" onclick="deleteAll()" type="submit" form="deleteSelectedForm">Delete All</button>
+          <button class="add action" type="submit" form="createForm">Add</button>
+        </div>
+        <p>{{ searchForm.search }} <button class="search" onclick="setSearchForm()">Search</button></p>
       </form>
     </header>
     <div class="content__table">
       <div class="content__table-header-courses">
+        <p><input type="checkbox" id="clickAll" onclick="toggleAll(this)"></p>
         <p><b>College Name</b></p>
         <p><b>College Code</b></p>
         <p><b>Actions</b></p>
@@ -25,6 +28,7 @@
         {% if results %}
           {% for college in results %}
             <div class="content__table-data-courses">
+              <p><input type="checkbox" class="checkbox" name="items" value="{{ college[2] }}" onclick="toggleButton()" form="deleteSelectedForm"></p>
               <p>{{ college[0] }}</p>
               <p>{{ college[1] }}</p>
               <div class="actions-div">

@@ -5,6 +5,6 @@ from app.forms import SearchForm
 
 @college_bp.route('/colleges')
 def index():
-    form = SearchForm()
+    searchForm = SearchForm()
     colleges = databaseModel.DatabaseManager.allCourses()
-    return render_template('colleges.html', results=colleges, form=form, title='Current established colleges inside MSU-IIT')
+    return render_template('colleges.html', results=colleges, searchForm=searchForm)

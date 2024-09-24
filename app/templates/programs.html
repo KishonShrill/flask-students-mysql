@@ -8,15 +8,18 @@
 {% block body %}
   <main>
     <header class="content__header">
-      <form class="content__header-form" method="POST" action="/students/search">
-        {{ form.csrf_token }}
-        {{ form.hidden_tag() }}
-        <p>{{ form.search }} {{ form.submit }} {{ form.studentSelection }} {{ form.querySelection }} </p>
-        <div class="actions-div"><button class="add">Add</button></div>
+      <form id="searchForm" class="content__header-form" method="POST" action="">
+        {{ searchForm.csrf_token }}
+        <div>
+          <button class="delete" hidden="hidden" id="deleteAll" onclick="deleteAll()" type="submit" form="deleteSelectedForm">Delete All</button>
+          <button class="add action" type="submit" form="createForm">Add</button>
+        </div>
+        <p>{{ searchForm.search }} <button class="search" onclick="setSearchForm()">Search</button> {{ searchForm.courseSelection }} {{ searchForm.searchCollege }} </p>
       </form>
     </header>
     <div class="content__table">
       <div class="content__table-header-courses">
+        <p><input type="checkbox" id="clickAll" onclick="toggleAll(this)"></p>
         <p><b>Course Name</b></p>
         <p><b>Courses Code</b></p>
         <p><b>College Code</b></p>
@@ -26,6 +29,7 @@
         {% if results %}
           {% for program in results %}
             <div class="content__table-data-courses">
+              <p><input type="checkbox" class="checkbox" name="items" value="{{ program[2] }}" onclick="toggleButton()" form="deleteSelectedForm"></p>
               <p>{{ program[0] }}</p>
               <p>{{ program[1] }}</p>
               <p>{{ program[2] }}</p>
