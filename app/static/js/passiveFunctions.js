@@ -1,15 +1,18 @@
 document.addEventListener("DOMContentLoaded", function() {  
+  // 
+  setTimeout(async function() {
+    $(".loader-wrapper").fadeOut("slow");
+  }, 1000);
+  
   // Modal Configuration
   // Modal Configuration
   // Modal Configuration
   const closeButtonDelete = document.querySelector("[data-close-modal-delete]");
   const closeButtonEdit = document.querySelector("[data-close-modal-edit]");
   const deleteModal = document.querySelector("[data-modal-delete]")
-  const editModal = document.querySelector("[data-modal-edit]")
 
 
   closeButtonDelete.addEventListener("click", () => {deleteModal.close()})
-  closeButtonEdit.addEventListener("click", () => {editModal.close()})
 
 
   // Delete Submission
