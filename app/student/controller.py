@@ -1,6 +1,7 @@
 from flask import render_template, redirect, request, flash, url_for
 from . import student_bp
 import app.databaseModel as databaseModel
+import re as regex
 from app.forms import *
 
 
@@ -29,7 +30,7 @@ def search(choices):
     print(f"Choices: {choices} and College: {college} and Query: {query}")
 
     searchForm.searchCollege.choices = [('', 'Select a Course')] + [(course[1], course[0]) for course in courses]
-    studentForm.editCourse.choices = [(course[1], course[0]) for course in courses]
+    studentForm.studentCourse.choices = [(course[1], course[0]) for course in courses]
     
     if query:
         results: str = ''
@@ -71,17 +72,23 @@ def search(choices):
         return render_template("students.html", results=results, query=query, searchForm=searchForm, studentForm=studentForm)
     else:
         if college:
-            print("No query but have college")
+            flash(f"Searching by {college}", "info")
             results = databaseModel.DatabaseManager.queryCollege(college)
             return render_template("students.html", results=results, query=query, searchForm=searchForm, studentForm=studentForm)
-        print("Did I go here?")
-        return redirect(url_for("student.index"))
+        
+        elif choices:
+            flash(f"Sorting by {choices}", "info")
+            results = databaseModel.DatabaseManager.sortBy(choices)
+            return render_template("students.html", results=results, query=query, searchForm=searchForm, studentForm=studentForm)
+        else:
+            print("Did I go here?")
+            return redirect(url_for("student.index"))
 
 # CRUDL CONTROLLERS
 # CRUDL CONTROLLERS
 # CRUDL CONTROLLERS
 
-@student_bp.route('/students/create/', methods=['POST'])
+@student_bp.route('/students/create/', methods=['POST','GET'])
 def create():
     studentForm = StudentForm()
     courses = databaseModel.DatabaseManager.allCourses()
@@ -90,7 +97,7 @@ def create():
     return render_template('./crud_blueprint/createStudent.html', studentForm=studentForm)
 
 @student_bp.route('/students/create/submit', methods=['POST','GET'])
-def createSubmit(student_id):
+def createSubmit():
     if request.method == "POST":
         newFirstName = request.form.get('studentFirstName')
         newLastName = request.form.get('studentLastName')
@@ -99,11 +106,27 @@ def createSubmit(student_id):
         newGender = request.form.get('studentGender')
         newCourse = request.form.get('studentCourse')
 
-        print(f"FirstName: {newFirstName}, LastName: {newLastName}, newID: {newID}, Year: {newYear}, Gender: {newGender}, Course: {newCourse}")
-        databaseModel.DatabaseManager.editStudent(newFirstName, newLastName, newID, newYear, newGender, newCourse)
+        # Input validation
+        if not newFirstName or len(newFirstName) < 2:
+            flash("Invalid First Name: Only letters and spaces are allowed and must NOT be empty.", "warning")
+            return redirect(url_for('student.create'))
 
-        flash(f"Student {newID} has been added successfully!", "success")
-        return redirect(url_for('student.index'))
+        if not newLastName or len(newLastName) < 2:
+            flash("Invalid Last Name: Only letters and spaces are allowed and must NOT be empty.", "warning")
+            return redirect(url_for('student.create'))
+
+        if not newID or len(newID) != 9:
+            flash("ID is required and must be a 9-character ID.", "warning")
+            return redirect(url_for('student.create'))
+
+        isStudentExist = databaseModel.DatabaseManager.createStudent(newFirstName, newLastName, newID, newYear, newGender, newCourse)
+
+        if isStudentExist == False:
+            flash(f"Student {newID} already exists!", "warning")
+            return redirect(url_for('student.create'))
+        else:
+            flash(f"Student {newID} has been added successfully!", "success")
+            return redirect(url_for('student.index'))
     
     if request.method == "GET":
         flash("You are not allowed to do that!", "danger")
@@ -133,11 +156,13 @@ def edit(student_id):
         return render_template('./crud_blueprint/editStudent.html', studentForm=studentForm, student_id=student_id)
     
     else:
+        flash(f"Student {student_id} does not exist!", "warning")
         return redirect(url_for('student.index'))
 
 @student_bp.route('/students/edit/id=<student_id>/submit', methods=['POST','GET'])
 def editSubmit(student_id):
     if request.method == "POST":
+        name_regex = regex.compile(r'^[A-Za-z\s]+$')
 
         oldID = request.form.get('student_id-edit')
         newFirstName = request.form.get('studentFirstName')
@@ -147,7 +172,19 @@ def editSubmit(student_id):
         newGender = request.form.get('studentGender')
         newCourse = request.form.get('studentCourse')
 
-        print(f"Old Student ID: {oldID}, FirstName: {newFirstName}, LastName: {newLastName}, newID: {newID}, Year: {newYear}, Gender: {newGender}, Course: {newCourse}")
+        # Input validation
+        if not newFirstName or len(newFirstName) < 2 or not name_regex.match(newFirstName):
+            flash("Invalid First Name: Only letters and spaces are allowed and must NOT be empty.", "warning")
+            return redirect(url_for('student.edit', student_id=student_id))
+
+        if not newLastName or len(newLastName) < 2 or not name_regex.match(newLastName):
+            flash("Invalid Last Name: Only letters and spaces are allowed and must NOT be empty.", "warning")
+            return redirect(url_for('student.edit', student_id=student_id))
+
+        if not newID or len(newID) != 9:
+            flash("ID is required and must be a 9-character ID.", "warning")
+            return redirect(url_for('student.edit', student_id=student_id))
+
         isCommitSuccessful = databaseModel.DatabaseManager.editStudent(oldID, newFirstName, newLastName, newID, newYear, newGender, newCourse)
 
         if isCommitSuccessful:
@@ -158,7 +195,7 @@ def editSubmit(student_id):
             return redirect(url_for('student.index'))
     
     if request.method == "GET":
-        flash("You are not allowed to do that!", "danger")
+        flash("You can't illegally edit a record!", "danger")
         return redirect(url_for('student.index'))
     
 
@@ -169,14 +206,14 @@ def delete():
         delete_item = request.form.get('student_id-delete')
         print(f"Student to delete: {delete_item}")
 
-        # TODO: Database Delete Method
+        databaseModel.DatabaseManager.deleteStudent(delete_item)
 
         flash(f"Student {delete_item} has been deleted successfully!", "success")
         return redirect(url_for('student.index'))
 
     if request.method == "GET":
-            flash("You are not allowed to do that!", "danger")
-            return redirect(url_for('student.index'))
+        flash("You can't illegally delete a record!", "danger")
+        return redirect(url_for('student.index'))
     
 @student_bp.route('/students/delete_checked/', methods=['POST','GET'])
 def delete_checked():
@@ -186,14 +223,15 @@ def delete_checked():
         # Print the checked items to the console (or do something else like delete them from the database)
         print(f"Checked items for deletion: {checked_items}")
 
-        # Assuming you have a SQLAlchemy model to interact with the database
-        # for item in checked_items:
-            # Query the database and delete the item
-            # Example (assuming item represents an ID):
-            # MyModel.query.filter_by(id=item).delete()
-
-        # Commit the changes to the database
-        # db.session.commit()
+        # Loop through each checked item and delete the corresponding student from the database
+        for student_id in checked_items:
+            try:
+                databaseModel.DatabaseManager.deleteStudent(student_id)
+                print(f"Deleted student with ID: {student_id}")
+            except Exception as e:
+                print(f"Error deleting student with ID: {student_id} - {e}")
+                flash(f"Failed to delete student with ID: {student_id}", "danger")
+                return redirect(url_for('student.index'))
 
         # Redirect back to the main page (or show a confirmation page)
         return redirect(url_for('student.index'))

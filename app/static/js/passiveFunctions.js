@@ -8,7 +8,6 @@ document.addEventListener("DOMContentLoaded", function() {
   // Modal Configuration
   // Modal Configuration
   const closeButtonDelete = document.querySelector("[data-close-modal-delete]");
-  const closeButtonEdit = document.querySelector("[data-close-modal-edit]");
   const deleteModal = document.querySelector("[data-modal-delete]")
 
 

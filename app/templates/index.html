@@ -6,6 +6,10 @@
 {% endblock %}
 
 {% block body %}
+  <div class="loader-wrapper">
+    <img class="imageSpin" src="{{ url_for('static', filename='images/logo-dp.jpg') }}" alt="Preload Logo">
+  </div>
+
   <main>
     <header class="header-container">
       <img src="{{ url_for('static', filename='images/logo-dp.jpg') }}" alt="SSIS System Logo">

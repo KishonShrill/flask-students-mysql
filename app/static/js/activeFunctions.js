@@ -44,15 +44,12 @@ function confirmationModal(studentId, category) {
   }
 
   if (category == "singleEdit") {
-    const isValidated = validateStudent();
-    if (isValidated) {
-      const modal = document.querySelector("[data-modal-delete]");
-      const studentLabel = document.querySelector("[student-number]");
-      modal.showModal();
+    const modal = document.querySelector("[data-modal-delete]");
+    const studentLabel = document.querySelector("[student-number]");
+    modal.showModal();
 
-      studentLabel.innerText = studentId;
-      studentLabel.style.fontWeight = "bold";
-    }
+    studentLabel.innerText = studentId;
+    studentLabel.style.fontWeight = "bold";
   }
 }
 
@@ -77,11 +74,11 @@ function validateStudent() {
   const regexID = /^\d{4}-\d{4}$/;
 
   if (!regexName.test(fnInput.value)) {
-      alert("Invalid format for First Name. Only letters and spaces are allowed.");
+      alert("Invalid First Name: Only letters and spaces are allowed and must NOT be empty.");
       return false; // Prevent form submission
   }
   if (!regexName.test(lnInput.value)) {
-    alert("Invalid format for Last Name. Only letters and spaces are allowed.");
+    alert("Invalid Last Name: Only letters and spaces are allowed and must NOT be empty.");
     return false; // Prevent form submission
   }
   if (!regexID.test(idInput.value)) {

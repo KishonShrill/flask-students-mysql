@@ -8,6 +8,13 @@ function setSearchForm() {
   searchForm.submit();
 }
 
+function setCreateSubmitForm() {
+  const createForm = document.getElementById('editStudentForm');
+
+  createForm.action = window.location.pathname + "/submit";
+  createForm.submit();
+}
+
 function setEditForm(studentId) {
   const editForm = document.getElementById('singleEditForm');
 

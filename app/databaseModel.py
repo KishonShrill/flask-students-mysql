@@ -22,6 +22,37 @@ class DatabaseManager(object):
             print(f"Error adding student: {e}")
             mysql.connection.rollback()
 
+
+    """ CREATE METHOD """
+    @classmethod
+    def createStudent(cls, newFirstName, newLastName, newID, newYear, newGender, newCourse: str):
+        try:
+            cursor = mysql.connection.cursor()
+
+            # If newCourse is None, set it to NULL in the query
+            if newCourse == "None":
+                query = """
+                    INSERT INTO student(firstname, lastname, id, yearlevel, gender, coursecode) VALUE
+                    (%s, %s, %s, %s, %s, NULL);
+                """
+                values = (newFirstName, newLastName, newID, newYear, newGender)
+            else:
+                query = """
+                    INSERT INTO student(firstname, lastname, id, yearlevel, gender, coursecode) VALUE
+                    (%s, %s, %s, %s, %s, %s);
+                """
+                values = (newFirstName, newLastName, newID, newYear, newGender, newCourse)
+
+            cursor.execute(query, values)
+            mysql.connection.commit()
+            return True
+
+        except Exception as e:
+            print(f"Error updating student: {e}")
+            mysql.connection.rollback()
+            return False
+
+
     """ UPDATE METHOD """
     # @classmethod
     # def editStudent(cls, oldID, newFirstName, newLastName, newID, newYear, newGender, newCourse):
@@ -52,7 +83,6 @@ class DatabaseManager(object):
                     WHERE ID = %s
                 """
                 values = (newFirstName, newLastName, newID, newYear, newGender, oldID)
-                print("NEVEERRR")
             else:
                 query = """
                     UPDATE student 
@@ -60,7 +90,6 @@ class DatabaseManager(object):
                     WHERE ID = %s
                 """
                 values = (newFirstName, newLastName, newID, newYear, newGender, newCourse, oldID)
-                print("YES")
 
 
             cursor.execute(query, values)
@@ -79,7 +108,7 @@ class DatabaseManager(object):
     """ DELETE METHOD """
 
     @classmethod
-    def deleteStudent(cls, student_id):
+    def deleteStudent(cls, student_id: str):
         try:
             cursor = mysql.connection.cursor()
             sql = "DELETE FROM student WHERE ID = %s"
@@ -247,5 +276,44 @@ class DatabaseManager(object):
             FROM student
             WHERE student.coursecode = %s
         """, (args,))
+        result = cursor.fetchall()
+        return result
+    
+    @classmethod
+    def sortBy(cls, args: str):
+        cursor = mysql.connection.cursor()
+
+        if args == "firstname":
+            query = """
+                SELECT *
+                FROM student
+                ORDER BY firstname;
+            """
+        elif args == "lastname":
+            query = """
+                SELECT *
+                FROM student
+                ORDER BY lastname;
+            """
+        elif args == "id":
+            query = """
+                SELECT *
+                FROM student
+                ORDER BY id;
+            """
+        elif args == "yearlevel":
+            query = """
+                SELECT *
+                FROM student
+                ORDER BY yearlevel;
+            """
+        else:
+            query = """
+                SELECT *
+                FROM student
+                ORDER BY gender;
+            """
+
+        cursor.execute(query)
         result = cursor.fetchall()
         return result

@@ -18,7 +18,7 @@
         {{ searchForm.csrf_token }}
         <div>
           <button class="delete" hidden="hidden" id="deleteAll" onclick="deleteAll()" type="submit" form="deleteSelectedForm">Delete All</button>
-          <button class="add" type="submit" form="createForm">Add</button>
+          <button class="add action" type="submit" form="createForm">Add</button>
         </div>
         <p>{{ searchForm.search }} <button class="search" onclick="setSearchForm()">Search</button> {{ searchForm.studentSelection }} {{ searchForm.searchCollege }} </p>
       </form>
@@ -45,16 +45,17 @@
               <p>{{ student[3] }}</p>
 
               {% if student[4] == 'M' %}
-                <p><span class="gender" style="background-color: rgb(157, 157, 255);">Male</span></p>
+                <p><span class="highlight" style="background-color: rgb(157, 157, 255);">Male</span></p>
               {% elif student[4] == 'F' %}
-                <p><span class="gender" style="background-color: pink;">Female</span></p>
+                <p><span class="highlight" style="background-color: pink;">Female</span></p>
               {% elif student[4] == 'NB' %}
-                <p><span class="gender" style="background-color: rgb(38, 255, 129);">Non-Binary</span></p>
+                <p><span class="highlight" style="background-color: rgb(38, 255, 129);">Non-Binary</span></p>
               {% else %}
                 <p>NULL</p>
               {% endif %}
 
               <p>{{ student[5] }}</p>
+
               <div class="actions-div">
                 <button class="edit action" id="student_id-edit" onclick="setEditForm('{{ student[2] }}')"><img class="icon" src="{{ url_for('static', filename='images/pencil-edit-01-stroke-rounded.svg')}}" alt="Edit"></button>
                 <button class="delete action" name="delete" onclick="confirmationModal('{{ student[2] }}', 'singleDelete')"><img class="icon" src="{{ url_for('static', filename='images/delete-02-stroke-rounded.svg')}}" alt="Delete"></button>
@@ -80,6 +81,7 @@
       </div>
     </main>
   </dialog>
+  <!-- TODO: MAKE A DIALOG FOR MULTI DELETE -->
 {% endblock %}
 
 {% block alertsOverlay %}

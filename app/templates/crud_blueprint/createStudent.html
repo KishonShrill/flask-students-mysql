@@ -60,8 +60,8 @@
     </form>
     <footer class="form__actions">
       <button class="delete" onclick="location.href='/students';">Cancel</button>
-      <button class="add disabled" name="confirmEdit" editSubmit-confirmation onclick="" disabled>Submit
-        <span class="tooltiptext">There are no changes...</span>
+      <button class="add disabled" name="confirmEdit" editSubmit-confirmation onclick="confirmationModal(document.getElementById('studentID').value, 'singleEdit')" disabled>Submit
+        <span class="tooltiptext" id="edit-confirm-tooltip">There are no changes...</span>
       </button>
     </footer>
   </main>
@@ -75,7 +75,7 @@
 
       <div class="modal__actions">
         <button class="delete" data-close-modal-delete>Cancel</button>
-        <button class="add" value="" delete-confirmation onclick="setEditSubmitForm()">Confirm</button>
+        <button class="add" value="" delete-confirmation onclick="setCreateSubmitForm()">Confirm</button>
       </div>
     </main>
   </dialog>
@@ -87,6 +87,18 @@
       {% if messages %}
         {% for category, message in messages %}
           <div class="alert alert-{{ category }}" role="alert">
+            <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+            {% if category == "danger" %}
+              <strong>Danger!</strong>
+            {% elif category == "warning" %}
+              <strong>Warning!</strong>
+            {% elif category == "info" %}
+              <strong>Info!</strong>
+            {% elif category == "success" %}
+              <strong>Success!</strong>
+            {% else %}
+              <strong>%NULL%</strong>
+            {% endif %}
             {{ message }}
           </div>
         {% endfor %}   
