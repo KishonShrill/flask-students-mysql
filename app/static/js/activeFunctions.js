@@ -31,24 +31,24 @@ function toggleButton() {
   }
 }
 
-function confirmationModal(studentId, category) {
-  console.log(studentId + ":" + category);
+function confirmationModal(chosen_id, category) {
+  console.log(chosen_id + ":" + category);
 
   if (category == "singleDelete") {
     const modal = document.querySelector("[data-modal-delete]");
-    const studentLabel = document.querySelector("[student-number]");
+    const studentLabel = document.querySelector("[chosen-id]");
     modal.showModal();
 
-    studentLabel.innerText = studentId;
+    studentLabel.innerText = chosen_id;
     studentLabel.style.fontWeight = "bold";
   }
 
   if (category == "singleEdit") {
     const modal = document.querySelector("[data-modal-delete]");
-    const studentLabel = document.querySelector("[student-number]");
+    const studentLabel = document.querySelector("[chosen-id]");
     modal.showModal();
 
-    studentLabel.innerText = studentId;
+    studentLabel.innerText = chosen_id;
     studentLabel.style.fontWeight = "bold";
   }
 }

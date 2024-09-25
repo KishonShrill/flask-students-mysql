@@ -6,21 +6,15 @@ from wtforms.validators import InputRequired, Length, DataRequired, Regexp
 
 class SearchForm(FlaskForm):
     # Search Form
-    searchCollege = SelectField('College', choices = [])
-    searchCourse = SelectField('Course', choices = [])
+    searchOption = SelectField('College', choices = [])
     search = StringField('Search', render_kw={"placeholder": "Search..."})
     studentSelection = SelectField('Student Data', choices=[
         ('firstname', 'First Name'), ('lastname', 'Last Name'), 
         ('id', 'School ID'), ('yearlevel', 'Year'), 
         ('gender', 'Gender')])
-    courseSelection = SelectField('Course Data', choices=[
-        ('coursename', 'Programs'), ('coursecode', 'Course Code'),
-        ('collegecode', 'College')])
-    collegeSelection = SelectField('College Data', choices=[
-        ('collegename', 'College'), ('collegecode', 'Code')])
     
 class StudentForm(FlaskForm):
-    # Edit Form
+    # Edit Student Form
     studentFirstName = StringField('First Name', validators=[DataRequired()])
     studentLastName = StringField('Last Name', validators=[DataRequired()])
     studentID = StringField('Please enter a valid ID number.', validators=[
@@ -29,3 +23,9 @@ class StudentForm(FlaskForm):
     studentYear = SelectField('Year Level', choices=[1,2,3,4,5,6] ,validators=[DataRequired()])
     studentGender = SelectField('Select a gender', choices=["M", "F", "NB"], validators=[DataRequired()])
     studentCourse = SelectField('Select a course', choices = [], validators=[DataRequired()])
+
+class ProgramForm(FlaskForm):
+    # Edit Student Form
+    programName = StringField('Program Name', validators=[DataRequired()])
+    programCode = StringField('Program Code', validators=[DataRequired()])
+    programCollege = SelectField('Select a college', choices = [], validators=[DataRequired()])

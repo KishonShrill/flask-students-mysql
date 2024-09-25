@@ -7,6 +7,12 @@
 
 {% block body %}
   <main>
+    <form class="absolute" id="singleEditForm" method="POST" action="">{{ programForm.csrf_token }}</form>
+    <form class="absolute" id="createForm" method="POST" action="{{ url_for('programs.create') }}">{{ programForm.csrf_token }}</form>
+    <form class="absolute" id="deleteSelectedForm" method="POST" action="/programs/delete_checked/">{{ searchForm.csrf_token }}</form>
+    <form class="absolute" id="singleDeleteForm" method="POST" action="/programs/delete">{{ searchForm.csrf_token }}
+      <input type="hidden" name="delete-chosen_id" id="delete-chosen_id" value="">
+    </form>
     <header class="content__header">
       <form id="searchForm" class="content__header-form" method="POST" action="">
         {{ searchForm.csrf_token }}
@@ -14,7 +20,7 @@
           <button class="delete" hidden="hidden" id="deleteAll" onclick="deleteAll()" type="submit" form="deleteSelectedForm">Delete All</button>
           <button class="add action" type="submit" form="createForm">Add</button>
         </div>
-        <p>{{ searchForm.search }} <button class="search" onclick="setSearchForm()">Search</button> {{ searchForm.courseSelection }} {{ searchForm.searchCollege }} </p>
+        <p>{{ searchForm.search }} <button class="search" onclick="setSearchForm('programs')">Search</button> {{ searchForm.searchOption }} </p>
       </form>
     </header>
     <div class="content__table">
@@ -29,13 +35,19 @@
         {% if results %}
           {% for program in results %}
             <div class="content__table-data-courses">
-              <p><input type="checkbox" class="checkbox" name="items" value="{{ program[2] }}" onclick="toggleButton()" form="deleteSelectedForm"></p>
+              <p><input type="checkbox" class="checkbox" name="items" value="{{ program[1] }}" onclick="toggleButton()" form="deleteSelectedForm"></p>
               <p>{{ program[0] }}</p>
               <p>{{ program[1] }}</p>
-              <p>{{ program[2] }}</p>
+
+              {% if program[2] == None %}
+                <p><span class="highlight" style="background-color: rgb(255, 38, 38); color: aliceblue;">N/A</span></p>
+              {% else %}
+                <p>{{ program[2] }}</p>
+              {% endif %}
+
               <div class="actions-div">
-                <button class="edit">Edit</button>
-                <button class="delete">Delete</button>
+                <button class="edit action" onclick="setEditForm('{{ program[1] }}', 'programs')">Edit</button>
+                <button class="delete action" name="delete" onclick="confirmationModal('{{ program[1] }}', 'singleDelete')">Delete</button>
               </div>
             </div>
           {% endfor %}
@@ -45,4 +57,45 @@
       </div>
     </div>
   </main>
+{% endblock %}
+
+{% block confirmationModal %}
+  <!-- TODO: MODIFY FOR PROGRAMS -->
+  <dialog data-modal-delete class="modal">
+    <main>
+      <p>Are you sure want to delete?</p>
+      <p style="text-align: center;">Program: <span bold chosen-id></span></p>
+      <div class="modal__actions">
+        <button class="delete" data-close-modal-delete>Cancel</button>
+        <button class="add" delete-confirmation value="" onclick="submitSingleDeleteForm()">Submit</button>
+      </div>
+    </main>
+  </dialog>
+  <!-- TODO: MAKE A DIALOG FOR MULTI DELETE -->
+{% endblock %}
+
+{% block alertsOverlay %}
+  <div class="alert-container absolute">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }}" role="alert">
+            <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+            {% if category == "danger" %}
+              <strong>Danger!</strong>
+            {% elif category == "warning" %}
+              <strong>Warning!</strong>
+            {% elif category == "info" %}
+              <strong>Info!</strong>
+            {% elif category == "success" %}
+              <strong>Success!</strong>
+            {% else %}
+              <strong>%NULL%</strong>
+            {% endif %}
+            {{ message }}
+          </div>
+        {% endfor %}   
+      {% endif %}
+    {% endwith %}
+  </div>
 {% endblock %}

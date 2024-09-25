@@ -3,14 +3,6 @@ from app import mysql
 class DatabaseManager(object):
 
 
-    def __init__(self, id=None, firstname=None, lastname=None, course=None, year=None, gender=None):
-        self.id = id
-        self.firstname = firstname
-        self.lastname = lastname
-        self.course = course
-        self.year = year
-        self.gender = gender
-
     def add(self):
         try:
             cursor = mysql.connection.cursor()
@@ -48,28 +40,28 @@ class DatabaseManager(object):
             return True
 
         except Exception as e:
-            print(f"Error updating student: {e}")
+            print(f"Error creating student: {e}")
+            mysql.connection.rollback()
+            return False
+
+    @classmethod
+    def createProgram(cls, newName, newCode, newCollege):
+        try:
+            cursor = mysql.connection.cursor()
+            cursor.execute("""
+                INSERT INTO course(coursename, coursecode, collegecode) VALUE
+                (%s, %s, %s);
+            """, (newName, newCode, newCollege))
+            mysql.connection.commit()
+            return True
+        
+        except Exception as e:
+            print(f"Error creating course: {e}")
             mysql.connection.rollback()
             return False
 
 
-    """ UPDATE METHOD """
-    # @classmethod
-    # def editStudent(cls, oldID, newFirstName, newLastName, newID, newYear, newGender, newCourse):
-    #     try:
-    #         cursor = mysql.connection.cursor()
-    #         cursor.execute("""
-    #             UPDATE student 
-    #             SET FirstName = %s, LastName = %s, ID = %s, YearLevel = %s, Gender = %s, CourseCode = %s
-    #             WHERE ID = %s
-    #         """, (newFirstName, newLastName, newID, newYear, newGender, newCourse, oldID))
-    #         mysql.connection.commit()
-    #         return True
-    #     except Exception as e:
-    #         print(f"Error updating student: {e}")
-    #         mysql.connection.rollback()
-    #         return False
-        
+    """ UPDATE METHOD """    
     @classmethod
     def editStudent(cls, oldID, newFirstName, newLastName, newID, newYear, newGender, newCourse: str):
         try:
@@ -91,7 +83,6 @@ class DatabaseManager(object):
                 """
                 values = (newFirstName, newLastName, newID, newYear, newGender, newCourse, oldID)
 
-
             cursor.execute(query, values)
             mysql.connection.commit()
             return True
@@ -101,8 +92,23 @@ class DatabaseManager(object):
             mysql.connection.rollback()
             return False
         
-    
-    
+    @classmethod
+    def editProgram(cls, oldID, newName, newCode, newCollege):
+        try:
+            cursor = mysql.connection.cursor()
+            cursor.execute("""
+                UPDATE course
+                SET CourseName = %s, CourseCode = %s, CollegeCode = %s
+                WHERE CourseCode = %s
+            """, (newName, newCode, newCollege, oldID))
+            mysql.connection.commit()
+            return True
+        
+        except Exception as e:
+            print(f"Error updating course: {e}")
+            mysql.connection.rollback()
+            return False
+
     """ DELETE METHOD """
     """ DELETE METHOD """
     """ DELETE METHOD """
@@ -117,6 +123,19 @@ class DatabaseManager(object):
             return True
         except Exception as e:
             print(f"Error deleting student: {e}")
+            mysql.connection.rollback()
+            return False
+        
+    @classmethod
+    def deleteProgram(cls, course_id: str):
+        try:
+            cursor = mysql.connection.cursor()
+            sql = "DELETE FROM course WHERE CourseCode = %s"
+            cursor.execute(sql, (course_id,))
+            mysql.connection.commit()
+            return True
+        except Exception as e:
+            print(f"Error deleting program: {e}")
             mysql.connection.rollback()
             return False
 
@@ -159,7 +178,7 @@ class DatabaseManager(object):
     """ WEBSITE THINGS """
 
     @classmethod
-    def queryStudentFirstNameWithCollege(cls, args: str, college: str):
+    def queryStudentFirstNameWithCourse(cls, args: str, college: str):
         cursor = mysql.connection.cursor()
         cursor.execute("""
             SELECT *
@@ -170,7 +189,7 @@ class DatabaseManager(object):
         return result
     
     @classmethod
-    def queryStudentLastNameWithCollege(cls, args: str, college: str):
+    def queryStudentLastNameWithCourse(cls, args: str, college: str):
         cursor = mysql.connection.cursor()
         cursor.execute("""
             SELECT *
@@ -181,7 +200,7 @@ class DatabaseManager(object):
         return result
     
     @classmethod
-    def queryStudentIDWithCollege(cls, args: str, college: str):
+    def queryStudentIDWithCourse(cls, args: str, college: str):
         cursor = mysql.connection.cursor()
         cursor.execute("""
             SELECT *
@@ -192,7 +211,7 @@ class DatabaseManager(object):
         return result
     
     @classmethod
-    def queryStudentYearWithCollege(cls, args: str, college: str):
+    def queryStudentYearWithCourse(cls, args: str, college: str):
         cursor = mysql.connection.cursor()
         cursor.execute("""
             SELECT *
@@ -203,7 +222,7 @@ class DatabaseManager(object):
         return result
     
     @classmethod
-    def queryStudentGenderWithCollege(cls, args: str, college: str):
+    def queryStudentGenderWithCourse(cls, args: str, college: str):
         cursor = mysql.connection.cursor()
         cursor.execute("""
             SELECT *
@@ -236,13 +255,16 @@ class DatabaseManager(object):
         return result
     
     @classmethod
-    def queryStudentID(cls, args: str):
+    # def queryStudentID(cls, args: str):
+    def queryStudentWithID(cls, args: str):
         cursor = mysql.connection.cursor()
-        cursor.execute("""
+        query = """
             SELECT *
             FROM student
             WHERE student.ID LIKE %s
-        """, ('%' + args + '%',))
+        """
+        values = ('%' + args + '%',)
+        cursor.execute(query, values)
         result = cursor.fetchall()
         return result
     
@@ -269,12 +291,56 @@ class DatabaseManager(object):
         return result
     
     @classmethod
-    def queryCollege(cls, args: str):
+    def queryStudentWithCourse(cls, args: str):
         cursor = mysql.connection.cursor()
         cursor.execute("""
             SELECT *
-            FROM student
-            WHERE student.coursecode = %s
+            FROM course
+            WHERE course.coursecode like %s
+        """, (args,))
+        result = cursor.fetchall()
+        return result
+    
+    @classmethod
+    def queryCourseWithNoCollege(cls, args: str):
+        cursor = mysql.connection.cursor()
+        cursor.execute("""
+            SELECT *
+            FROM course
+            WHERE course.coursename like %s
+        """, ('%' + args + '%',))
+        result = cursor.fetchall()
+        return result
+    
+    @classmethod
+    def queryCourseWithCollege(cls, args: str, college: str):
+        cursor = mysql.connection.cursor()
+        cursor.execute("""
+            SELECT *
+            FROM course
+            WHERE course.coursename like %s and course.collegecode = %s
+        """, ('%' + args + '%', college,))
+        result = cursor.fetchall()
+        return result
+
+    @classmethod
+    def queryCourse(cls, args: str):
+        cursor = mysql.connection.cursor()
+        cursor.execute("""
+            SELECT *
+            FROM course
+            WHERE course.collegecode = %s
+        """, (args,))
+        result = cursor.fetchall()
+        return result
+    
+    @classmethod
+    def queryCourseWithCode(cls, args: str):
+        cursor = mysql.connection.cursor()
+        cursor.execute("""
+            SELECT *
+            FROM course
+            WHERE course.coursecode = %s
         """, (args,))
         result = cursor.fetchall()
         return result

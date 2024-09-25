@@ -7,8 +7,8 @@
 {% endblock %}
 
 {% block body %}
-  <main data-modal-edit class="crud-student">
-    <form class="crud-student__block" id="editStudentForm" method="POST" action="">
+  <main data-modal-edit class="crud">
+    <form class="crud__block" id="editForm" method="POST" action="">
       {{ studentForm.csrf_token }}
       <div class="crud-form-container">
         <header class="crud-form-header">
@@ -72,7 +72,7 @@
   <dialog data-modal-delete class="modal">
     <main>
       <p>Are you sure want to proceed with the update?</p>
-      <p style="text-align: center;">student: <span bold student-number></span></p>
+      <p style="text-align: center;">student: <span bold chosen-id></span></p>
 
       <div class="modal__actions">
         <button class="delete" data-close-modal-delete>Cancel</button>

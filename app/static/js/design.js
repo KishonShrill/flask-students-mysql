@@ -3,9 +3,11 @@ document.addEventListener("DOMContentLoaded", function() {
   const currentPath = window.location.pathname;
   console.log(window.location.pathname)
 
-  // Find all nav links
-  const navLinks = document.querySelectorAll('.aside__nav-links');
+  const webBody = document.querySelector('body')
+  if ("/" === currentPath) {webBody.style.backgroundColor = "#ededed";}
 
+
+  const navLinks = document.querySelectorAll('.aside__nav-links');
   // Iterate through each link and apply background color if the path matches
   navLinks.forEach(link => {
       if (link.getAttribute('href') === currentPath) {
@@ -13,6 +15,7 @@ document.addEventListener("DOMContentLoaded", function() {
           link.style.color = "white";
       }
   });
+
 
   // Get all elements with class="closebtn"
   var close = document.getElementsByClassName("closebtn");

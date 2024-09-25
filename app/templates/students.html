@@ -11,7 +11,7 @@
     <form class="absolute" id="createForm" method="POST" action="{{ url_for('student.create') }}">{{ studentForm.csrf_token }}</form>
     <form class="absolute" id="deleteSelectedForm" method="POST" action="/students/delete_checked">{{ searchForm.csrf_token }}</form>
     <form class="absolute" id="singleDeleteForm" method="POST" action="/students/delete">{{ searchForm.csrf_token }}
-      <input type="hidden" name="student_id-delete" id="student_id-delete" value="">
+      <input type="hidden" name="delete-chosen_id" id="delete-chosen_id" value="">
     </form>
     <header class="content__header">
       <form id="searchForm" class="content__header-form" method="POST" action="">
@@ -20,7 +20,7 @@
           <button class="delete" hidden="hidden" id="deleteAll" onclick="deleteAll()" type="submit" form="deleteSelectedForm">Delete All</button>
           <button class="add action" type="submit" form="createForm">Add</button>
         </div>
-        <p>{{ searchForm.search }} <button class="search" onclick="setSearchForm()">Search</button> {{ searchForm.studentSelection }} {{ searchForm.searchCourse }} </p>
+        <p>{{ searchForm.search }} <button class="search" onclick="setSearchForm('student')">Search</button> {{ searchForm.studentSelection }} {{ searchForm.searchOption }} </p>
       </form>
     </header>
     <div class="content__table">
@@ -61,7 +61,7 @@
               {% endif %}
 
               <div class="actions-div">
-                <button class="edit action" id="student_id-edit" onclick="setEditForm('{{ student[2] }}')"><img class="icon" src="{{ url_for('static', filename='images/pencil-edit-01-stroke-rounded.svg')}}" alt="Edit"></button>
+                <button class="edit action" id="student_id-edit" onclick="setEditForm('{{ student[2] }}', 'students')"><img class="icon" src="{{ url_for('static', filename='images/pencil-edit-01-stroke-rounded.svg')}}" alt="Edit"></button>
                 <button class="delete action" name="delete" onclick="confirmationModal('{{ student[2] }}', 'singleDelete')"><img class="icon" src="{{ url_for('static', filename='images/delete-02-stroke-rounded.svg')}}" alt="Delete"></button>
               </div>
             </div>
@@ -78,7 +78,7 @@
   <dialog data-modal-delete class="modal">
     <main>
       <p>Are you sure want to delete?</p>
-      <p style="text-align: center;">student: <span bold student-number></span></p>
+      <p style="text-align: center;">Student: <span bold chosen-id></span></p>
       <div class="modal__actions">
         <button class="delete" data-close-modal-delete>Cancel</button>
         <button class="add" delete-confirmation value="" onclick="submitSingleDeleteForm()">Submit</button>

@@ -3,16 +3,16 @@
 {% block head %}
   <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}"> 
   <script type="text/javascript" src="{{ url_for('static', filename='js/editStudent.js' )}}"></script>
-  <title>Create Student</title>
+  <title>Edit Student</title>
 {% endblock %}
 
 {% block body %}
   <main data-modal-edit class="crud">
-    <form class="crud__block" id="editForm" method="POST" action="">
-      {{ studentForm.csrf_token }}
+    <form class="crud__block" id="editStudentForm" method="POST" action="">
+      {{ programForm.csrf_token }}
       <div class="crud-form-container">
         <header class="crud-form-header">
-          <h1>Create Student Details</h1>
+          <h1>Edit Program Details</h1>
         </header>
 
         <main class="crud-form">
@@ -24,43 +24,28 @@
               gap: 1rem;
             ">
               <div class="crud-form-inputs">
-                {{ studentForm.studentFirstName }}
-                {{ studentForm.studentFirstName.label }}
+                {{ programForm.programName }}
+                {{ programForm.programName.label }}
               </div>
               <div class="crud-form-inputs">
-                {{ studentForm.studentLastName }}
-                {{ studentForm.studentLastName.label }}
+                {{ programForm.programCode }}
+                {{ programForm.programCode.label }}
               </div>
             </div>
           </div>
           <div>
-            <span>Student ID</span>
+            <span>Program Details</span>
             <div class="crud-form-inputs">
-              {{ studentForm.studentID }}
-              {{ studentForm.studentID.label }}
-            </div>
-          </div>
-          <div>
-            <span>Student Details</span>
-            <div class="crud-form-inputs">
-              {{ studentForm.studentYear }}
-              {{ studentForm.studentYear.label }}
-            </div>
-            <div class="crud-form-inputs">
-              {{ studentForm.studentGender }}
-              {{ studentForm.studentGender.label }}
-            </div>
-            <div class="crud-form-inputs">
-              {{ studentForm.studentCourse }}
-              {{ studentForm.studentCourse.label }}
+              {{ programForm.programCollege }}
+              {{ programForm.programCollege.label }}
             </div>
           </div>
         </main>
       </div>
     </form>
     <footer class="form__actions">
-      <button class="delete" onclick="location.href='/students';">Cancel</button>
-      <button class="add disabled" name="confirmEdit" editSubmit-confirmation onclick="confirmationModal(document.getElementById('studentID').value, 'singleEdit')" disabled>Submit
+      <button class="delete" onclick="location.href='/programs';">Cancel</button>
+      <button class="add disabled" name="confirmEdit" editSubmit-confirmation onclick="confirmationModal(document.getElementById('programCode').value, 'singleEdit')" disabled>Submit
         <span class="tooltiptext" id="edit-confirm-tooltip">There are no changes...</span>
       </button>
     </footer>
@@ -71,11 +56,11 @@
   <dialog data-modal-delete class="modal">
     <main>
       <p>Are you sure want to proceed with the update?</p>
-      <p style="text-align: center;">student: <span bold student-number></span></p>
+      <p style="text-align: center;">Program: <span bold chosen-id></span></p>
 
       <div class="modal__actions">
         <button class="delete" data-close-modal-delete>Cancel</button>
-        <button class="add" value="" delete-confirmation onclick="setCreateSubmitForm()">Confirm</button>
+        <button class="add" value="" delete-confirmation onclick="setEditSubmitForm()">Confirm</button>
       </div>
     </main>
   </dialog>

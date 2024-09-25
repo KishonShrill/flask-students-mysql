@@ -25,10 +25,12 @@ DROP TABLE IF EXISTS `course`;
 CREATE TABLE IF NOT EXISTS `course` (
   `CourseName` varchar(255) NOT NULL,
   `CourseCode` varchar(20) NOT NULL,
-	`CollegeCode` varchar(20) NOT NULL,
+	`CollegeCode` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`CourseCode`),
 	KEY `fk_course_college` (`CollegeCode`),
-  CONSTRAINT `fk_course_college` FOREIGN KEY (`CollegeCode`) REFERENCES `college` (`CollegeCode`)
+  CONSTRAINT `fk_course_college` FOREIGN KEY (`CollegeCode`) REFERENCES `college` (`CollegeCode`) 
+	ON UPDATE CASCADE
+	ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
@@ -89,6 +91,8 @@ CREATE TABLE IF NOT EXISTS student (
   UNIQUE KEY unique_name (FirstName, LastName),
   KEY fk_student_course (CourseCode),
   CONSTRAINT fk_student_course FOREIGN KEY (CourseCode) REFERENCES course (CourseCode)
+	ON UPDATE CASCADE
+	ON DELETE SET NULL
 );
 
 

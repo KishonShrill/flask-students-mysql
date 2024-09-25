@@ -243,3 +243,7 @@ label {
 button[name="confirmEdit"]:hover .tooltiptext {
   visibility: visible;
 }
+
+.stat-card {
+  background-color: white;
+}
