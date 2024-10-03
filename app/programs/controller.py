@@ -99,16 +99,16 @@ def createSubmit():
 def edit(program_id):
     program_id = program_id or request.args.get('id')
     program = databaseModel.DatabaseManager.queryCourseWithCode(program_id)
-    print(program)
+
     if program:
         programForm = ProgramForm()
 
-        programForm.programName.data = program[0][0]  # Assuming program[0] is the first name
-        programForm.programCode.data = program[0][1]   # Assuming program[1] is the last name
+        programForm.programName.data = program[0][0]
+        programForm.programCode.data = program[0][1]
 
         courses = databaseModel.DatabaseManager.allColleges()
         programForm.programCollege.choices = [(course[1], course[0]) for course in courses]
-        programForm.programCollege.data = program[0][2]  # Assuming program[5] is the current course code
+        programForm.programCollege.data = program[0][2]
 
         return render_template('./crud_blueprint/program.html', form=programForm, program_id=program_id)
     
@@ -120,6 +120,7 @@ def edit(program_id):
 def editSubmit(program_id):
     if request.method == "POST":
         name_regex = regex.compile(r'^[A-Za-z\s]+$')
+        code_regex = regex.compile(r'^[A-Za-z]+$')
 
         oldCode = request.form.get('course_id-edit')
         newProgramName = request.form.get('programName')
@@ -127,11 +128,11 @@ def editSubmit(program_id):
         newProgramCollege = request.form.get('programCollege')
 
         # Input validation
-        if not newProgramName or len(newProgramName) < 3 or not name_regex.match(newProgramName):
+        if not newProgramName or len(newProgramName) < 3 or len(newProgramName) > 255 or not name_regex.match(newProgramName):
             flash("Invalid Program Name: Only letters and spaces are allowed and must NOT be empty.", "warning")
             return redirect(url_for('programs.edit', program_id=program_id))
-        if not newProgramCode or len(newProgramCode) < 3 or not name_regex.match(newProgramCode):
-            flash("Invalid Program Code: Only letters and spaces are allowed and must NOT be empty.", "warning")
+        if not newProgramCode or len(newProgramCode) < 3 or len(newProgramCode) > 20 or not code_regex.match(newProgramCode):
+            flash("Invalid Program Code: CAPITAL letters only are allowed and must NOT be empty.", "warning")
             return redirect(url_for('programs.edit', program_id=program_id))
         
         isCommitSuccessful = databaseModel.DatabaseManager.editProgram(oldCode, newProgramName, newProgramCode, newProgramCollege)
@@ -145,7 +146,7 @@ def editSubmit(program_id):
 
     if request.method == "GET":
         flash("You can't illegally edit a record!", "danger")
-        return redirect(url_for('student.index'))
+        return redirect(url_for('programs.index'))
 
 # DELETE CONTROLLERS
 # DELETE CONTROLLERS

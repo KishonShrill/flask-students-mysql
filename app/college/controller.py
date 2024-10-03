@@ -69,6 +69,58 @@ def createSubmit():
         flash("You are not allowed to do that!", "danger")
         return redirect(url_for('colleges.index'))
     
+# UPDATE CONTROLLERS
+# UPDATE CONTROLLERS
+# UPDATE CONTROLLERS
+
+@college_bp.route('/colleges/edit/id=<college_id>', methods=['POST','GET'])
+def edit(college_id):
+    college_id = college_id or request.args.get('id')
+    college = databaseModel.DatabaseManager.queryCollegeWithCode(college_id)
+
+    if college:
+        collegeForm = CollegeForm()
+
+        collegeForm.collegeName.data = college[0][0]
+        collegeForm.collegeCode.data = college[0][1]
+
+        return render_template('./crud_blueprint/college.html', form=collegeForm, college_id=college_id)
+    
+    else:
+        flash(f"College {college_id} does not exist!", "warning")
+        return redirect(url_for('colleges.index'))
+    
+@college_bp.route('/colleges/edit/id=<college_id>/submit', methods=['POST','GET'])
+def editSubmit(college_id):
+    if request.method == "POST":
+        name_regex = regex.compile(r'^[A-Za-z\s]+$')
+        code_regex = regex.compile(r'^[A-Z]+$')
+
+        oldCode = request.form.get('college_id-edit')
+        newCollegeName = request.form.get('collegeName')
+        newCollegeCode = request.form.get('collegeCode')
+
+        # Input validation
+        if not newCollegeName or len(newCollegeName) < 3 or len(newCollegeName) > 255 or not name_regex.match(newCollegeName):
+            flash("Invalid College Name: Only letters and spaces are allowed and must NOT be empty.", "warning")
+            return redirect(url_for('colleges.edit', college_id=college_id))
+        if not newCollegeCode or len(newCollegeCode) < 3 or len(newCollegeCode) > 20 or not code_regex.match(newCollegeCode):
+            flash("Invalid College Code: CAPITAL letters only are allowed and must NOT be empty.", "warning")
+            return redirect(url_for('colleges.edit', college_id=college_id))
+        
+        isCommitSuccessful = databaseModel.DatabaseManager.editCollege(oldCode, newCollegeName, newCollegeCode)
+
+        if isCommitSuccessful:
+            flash(f"College {newCollegeCode} has been updated successfully!", "success")
+            return redirect(url_for('colleges.index'))
+        else:
+            flash(f"College {newCollegeCode} has NOT updated successfully!", "warning")
+            return redirect(url_for('colleges.index'))
+
+    if request.method == "GET":
+        flash("You can't illegally edit a record!", "danger")
+        return redirect(url_for('colleges.index'))
+
 # DELETE CONTROLLERS
 # DELETE CONTROLLERS
 # DELETE CONTROLLERS

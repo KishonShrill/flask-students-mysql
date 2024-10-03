@@ -124,6 +124,23 @@ class DatabaseManager(object):
             print(f"Error updating course: {e}")
             mysql.connection.rollback()
             return False
+        
+    @classmethod
+    def editCollege(cls, oldID, newName, newCode):
+        try:
+            cursor = mysql.connection.cursor()
+            cursor.execute("""
+                UPDATE course
+                SET collegename = %s, collegecode = %s
+                WHERE collegecode = %s
+            """, (newName, newCode, oldID))
+            mysql.connection.commit()
+            return True
+        
+        except Exception as e:
+            print(f"Error updating course: {e}")
+            mysql.connection.rollback()
+            return False
 
     """ DELETE METHOD """
     """ DELETE METHOD """
@@ -324,8 +341,8 @@ class DatabaseManager(object):
         cursor = mysql.connection.cursor()
         cursor.execute("""
             SELECT *
-            FROM course
-            WHERE course.coursecode like %s
+            FROM student
+            WHERE student.coursecode like %s
         """, (args,))
         result = cursor.fetchall()
         return result
@@ -381,6 +398,17 @@ class DatabaseManager(object):
             SELECT *
             FROM college
             WHERE college.collegename = %s
+        """, (args,))
+        result = cursor.fetchall()
+        return result
+    
+    @classmethod
+    def queryCollegeWithCode(cls, args: str):
+        cursor = mysql.connection.cursor()
+        cursor.execute("""
+            SELECT *
+            FROM college
+            WHERE college.collegecode = %s
         """, (args,))
         result = cursor.fetchall()
         return result

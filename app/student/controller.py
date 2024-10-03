@@ -75,7 +75,6 @@ def search(choices):
             return render_template("students.html", results=results, query=query, searchForm=searchForm, studentForm=studentForm)
         
         elif choices:
-            flash(f"Sorting by {choices}", "info")
             results = databaseModel.DatabaseManager.sortBy(choices)
             return render_template("students.html", results=results, query=query, searchForm=searchForm, studentForm=studentForm)
         else:
@@ -96,6 +95,7 @@ def create():
 def createSubmit():
     if request.method == "POST":
         name_regex = regex.compile(r'^[A-Za-z\s]+$')
+        id_regex = regex.compile(r'^\d{4}-\d{4}$')
 
         newFirstName = request.form.get('studentFirstName')
         newLastName = request.form.get('studentLastName')
@@ -105,16 +105,17 @@ def createSubmit():
         newCourse = request.form.get('studentCourse')
 
         # Input validation
-        if not newFirstName or len(newFirstName) < 2 or not name_regex.match(newFirstName):
+        if not newFirstName or len(newFirstName) < 2 or len(newFirstName) > 199 or not name_regex.match(newFirstName):
             flash("Invalid First Name: Only letters and spaces are allowed and must NOT be empty.", "warning")
             return redirect(url_for('student.create'))
-
-        if not newLastName or len(newLastName) < 2 or not name_regex.match(newLastName):
+        if not newLastName or len(newLastName) < 2 or len(newLastName) > 199 or not name_regex.match(newLastName):
             flash("Invalid Last Name: Only letters and spaces are allowed and must NOT be empty.", "warning")
             return redirect(url_for('student.create'))
-
         if not newID or len(newID) != 9:
             flash("ID is required and must be a 9-character ID.", "warning")
+            return redirect(url_for('student.create'))
+        if not id_regex.match(newID):
+            flash("ID must match with pattern ####-####, e.g. 1234-5678", "warning")
             return redirect(url_for('student.create'))
 
         isStudentExist = databaseModel.DatabaseManager.createStudent(newFirstName, newLastName, newID, newYear, newGender, newCourse)
@@ -142,16 +143,16 @@ def edit(student_id):
     if student:
         studentForm = StudentForm()
 
-        studentForm.studentFirstName.data = student[0][0]  # Assuming student[0] is the first name
-        studentForm.studentLastName.data = student[0][1]   # Assuming student[1] is the last name
-        studentForm.studentID.data = student[0][2]         # Assuming student[2] is the ID
-        studentForm.studentYear.data = student[0][3]       # Assuming student[3] is the year level
-        studentForm.studentGender.data = student[0][4]     # Assuming student[4] is the gender
+        studentForm.studentFirstName.data = student[0][0]
+        studentForm.studentLastName.data = student[0][1]
+        studentForm.studentID.data = student[0][2]
+        studentForm.studentYear.data = student[0][3] 
+        studentForm.studentGender.data = student[0][4]
 
         courses = databaseModel.DatabaseManager.allCourses()
         studentForm.studentCourse.choices = [("None", 'Not Enrolled')] + [(course[1], course[0]) for course in courses]
 
-        studentForm.studentCourse.data = student[0][5]  # Assuming student[5] is the current course code
+        studentForm.studentCourse.data = student[0][5]
 
         return render_template('./crud_blueprint/student.html', form=studentForm, student_id=student_id)
     
@@ -163,6 +164,7 @@ def edit(student_id):
 def editSubmit(student_id):
     if request.method == "POST":
         name_regex = regex.compile(r'^[A-Za-z\s]+$')
+        id_regex = regex.compile(r'^\d{4}-\d{4}$')
 
         oldID = request.form.get('student_id-edit')
         newFirstName = request.form.get('studentFirstName')
@@ -181,6 +183,9 @@ def editSubmit(student_id):
             return redirect(url_for('student.edit', student_id=student_id))
         if not newID or len(newID) != 9:
             flash("ID is required and must be a 9-character ID.", "warning")
+            return redirect(url_for('student.edit', student_id=student_id))
+        if not id_regex.match(newID):
+            flash("ID must match with pattern ####-####, e.g. 1234-5678", "warning")
             return redirect(url_for('student.edit', student_id=student_id))
 
         isCommitSuccessful = databaseModel.DatabaseManager.editStudent(oldID, newFirstName, newLastName, newID, newYear, newGender, newCourse)

@@ -6,4 +6,7 @@ from app.forms import *
 
 @homepage_bp.route('/')
 def index():
-    return render_template('index.html')
+    students = databaseModel.DatabaseManager.countStudents()
+    programs = databaseModel.DatabaseManager.countPrograms()
+    colleges = databaseModel.DatabaseManager.countColleges()
+    return render_template('index.html', students=students, programs=programs, colleges=colleges)

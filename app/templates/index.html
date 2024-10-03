@@ -11,17 +11,24 @@
   </div>
 
   <main>
-    <section class="stat-card">
-      <h1>Overview</h1>
-      <div>
-        <div></div>
-        <div></div>
-        <div></div>
+    <section class="stats">
+      <h1 class="stat-title">Overview</h1>
+      <p>Date: <span id="date"></span></p>
+      <div class="stat-container">
+        <div class="stat-card blue">
+          <h2>Number Registered of Students</h2>
+          <p class="stat-data" id="student-data">{{ students }}</p>
+        </div>
+        <div class="stat-card lightorange">
+          <h2>Number of Registered Programs</h2>
+          <p class="stat-data" id="program-data">{{ programs }}</p>
+        </div>
+        <div class="stat-card lightgreen">
+          <h2>Number of Registered Colleges</h2>
+          <p class="stat-data" id="college-data">{{ colleges}}</p>
+        </div>
       </div>
     </section>
-    
-    <section>
-      <h1>Recent Additions  </h1>
-    </section>
+  
   </main>
 {% endblock %}

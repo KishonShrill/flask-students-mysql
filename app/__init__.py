@@ -19,11 +19,6 @@ def create_app(test_config=None):
     mysql.init_app(app)
     CSRFProtect(app)
 
-
-    # @app.route('/')
-    # def index():
-    #     return "LETS DO THIS SHITTassdfasdf"
-
     from .home import homepage_bp as homepage_blueprint
     from .student import student_bp as student_blueprint
     from .programs import courses_bp as program_blueprint

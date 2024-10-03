@@ -6,8 +6,8 @@
 {% endblock %}
 
 {% block body %}
-  <form class="absolute" id="singleEditForm" method="POST" action="">{{ programForm.csrf_token }}</form>
-  <form class="absolute" id="createForm" method="POST" action="{{ url_for('programs.create') }}">{{ programForm.csrf_token }}</form>
+  <form class="absolute" id="singleEditForm" method="POST" action="">{{ searchForm.csrf_token }}</form>
+  <form class="absolute" id="createForm" method="POST" action="{{ url_for('programs.create') }}">{{ searchForm.csrf_token }}</form>
   <form class="absolute" id="deleteSelectedForm" method="POST" action="/programs/delete_checked/">{{ searchForm.csrf_token }}</form>
   <form class="absolute" id="singleDeleteForm" method="POST" action="/programs/delete">{{ searchForm.csrf_token }}
     <input type="hidden" name="delete-chosen_id" id="delete-chosen_id" value="">
@@ -20,7 +20,7 @@
           <button class="delete" hidden="hidden" id="deleteAll" onclick="confirmationModal('MULTIPLE', 'MULTIPLE')">Delete All</button>
           <button class="add action" type="submit" form="createForm">Add</button>
         </div>
-        <p>{{ searchForm.search }}<button class="search" onclick="setSearchForm('programs')">Search</button> {{ searchForm.searchOption }}</p>
+        <p style="display: flex; align-items: center;">{{ searchForm.search }}<button class="search" style="margin-right: 1rem;" onclick="setSearchForm('programs')">Search</button> {{ searchForm.searchOption }}</p>
       </div>
     </header>
     <div class="content__table">
@@ -38,12 +38,7 @@
               <p><input type="checkbox" class="checkbox" name="items" value="{{ program[1] }}" onclick="toggleButton()" form="deleteSelectedForm"></p>
               <p>{{ program[0] }}</p>
               <p>{{ program[1] }}</p>
-
-              {% if program[2] == None %}
-                <p><span class="highlight" style="background-color: rgb(255, 38, 38); color: aliceblue;">N/A</span></p>
-              {% else %}
-                <p>{{ program[2] }}</p>
-              {% endif %}
+              <p><span class="highlight highlight-{{ program[2] }}">{{ program[2] }}</span></p>
 
               <div class="actions-div">
                 <button class="edit action" onclick="setEditForm('{{ program[1] }}', 'programs')"><img class="icon" src="{{ url_for('static', filename='images/pencil-edit-01-stroke-rounded.svg')}}" alt="Edit"></button>

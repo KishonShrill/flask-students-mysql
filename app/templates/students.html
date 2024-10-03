@@ -20,7 +20,7 @@
           <button class="delete" hidden="hidden" id="deleteAll" onclick="confirmationModal('MULTIPLE', 'MULTIPLE')">Delete All</button>
           <button class="add action" type="submit" form="createForm">Add</button>
         </div>
-        <p>{{ searchForm.search }}<button class="search" onclick="setSearchForm('students')">Search</button> {{ searchForm.studentSelection }} {{ searchForm.searchOption }}</p>
+        <p style="display: flex; align-items: center;">{{ searchForm.search }}<button class="search" style="margin-right: 1rem;" onclick="setSearchForm('students')">Search</button> {{ searchForm.studentSelection }} {{ searchForm.searchOption }}</p>
       </div>
     </header>
     <div class="content__table">
@@ -43,22 +43,8 @@
               <p>{{ student[1] }}</p>
               <p>{{ student[2] }}</p>
               <p>{{ student[3] }}</p>
-
-              {% if student[4] == 'M' %}
-                <p><span class="highlight" style="background-color: rgb(157, 157, 255);">Male</span></p>
-              {% elif student[4] == 'F' %}
-                <p><span class="highlight" style="background-color: pink;">Female</span></p>
-              {% elif student[4] == 'NB' %}
-                <p><span class="highlight" style="background-color: rgb(38, 255, 129);">Non-Binary</span></p>
-              {% else %}
-                <p>NULL</p>
-              {% endif %}
-
-              {% if student[5] == None %}
-                <p><span class="highlight" style="background-color: rgb(255, 38, 38); color: aliceblue;">N/A</span></p>
-              {% else %}
-                <p>{{ student[5] }}</p>
-              {% endif %}
+              <p><span class="highlight highlight-{{ student[4] }}">{{ student[4] }}</span></p>
+              <p><span class="highlight highlight-{{ student[5] }}">{{ student[5] }}</span></p>
 
               <div class="actions-div">
                 <button class="edit action" id="student_id-edit" onclick="setEditForm('{{ student[2] }}', 'students')"><img class="icon" src="{{ url_for('static', filename='images/pencil-edit-01-stroke-rounded.svg')}}" alt="Edit"></button>
@@ -88,7 +74,6 @@
       </div>
     </main>
   </dialog>
-  <!-- TODO: MAKE A DIALOG FOR MULTI DELETE -->
 {% endblock %}
 
 {% block alertsOverlay %}

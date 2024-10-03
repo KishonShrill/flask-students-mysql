@@ -36,4 +36,15 @@ document.addEventListener("DOMContentLoaded", function() {
       setTimeout(function(){ div.style.display = "none"; }, 600);
     }
   }
+
+  const dateDisplay = document.getElementById('date');
+  // Create a new Date object for today's date
+  const today = new Date();
+  // Define options for formatting the date
+  const options = { day: '2-digit', month: 'long', year: 'numeric' };
+  // Format the date using the `toLocaleDateString` method
+  const formattedDate = today.toLocaleDateString('en-US', options);
+  // Output the formatted date
+  dateDisplay.innerHTML = formattedDate;
+
 });

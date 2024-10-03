@@ -209,6 +209,10 @@ label {
   padding: 0.25rem 0.5rem;
   border-radius: 5px;
 }
+.highlight-Male {background-color: rgb(157, 157, 255);}
+.highlight-Female {background-color: pink;}
+.highlight-Non-Binary {background-color: rgb(38, 255, 129);}
+.highlight-None {background-color: rgb(255, 38, 38); color: aliceblue;}
 
 .form__actions {
   width: 300px;
@@ -258,22 +262,44 @@ button[name="confirmEdit"]:hover .tooltiptext {
   visibility: visible;
 }
 
+.stat-title {
+  margin-top: 2rem;
+  font-size: 2.75rem;
+}
+.stat-container {
+  width: 100%;
+  margin-top: 2rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 2rem;
+}
 .stat-card {
+  padding: 1rem;
+  border-radius: 10px;
   background-color: white;
 }
+.stat-data {
+  margin-block: 1rem;
+  text-align: center;
+  font-size: 2rem;
+  font-weight: bold;
+}
+.blue {background-color: #D0D9F3;}
+.lightorange {background-color: #EFD8D8;}
+.lightgreen {background-color: #D0E1E1;}
 
 /* Scrollbar Styles */
 /* Scrollbar Styles */
 /* Scrollbar Styles */
 /* Style the entire scrollbar */
-::-webkit-scrollbar {
-  width: 20px; /* Set the width of the scrollbar */
-}
+::-webkit-scrollbar {width: 20px;}
 /* Style the draggable part of the scrollbar (thumb) */
 ::-webkit-scrollbar-thumb {
   background-color: #3498db; /* Thumb color */
   border-radius: 50rem; /* Rounded corners for the thumb */
 }
+::-webkit-scrollbar-thumb:hover {cursor: grab;}
+::-webkit-scrollbar-thumb:active {cursor: grabbing;}
 /* Style the background area of the scrollbar (track) */
 ::-webkit-scrollbar-track {
   background: #f1f1f1; /* Track background color */
