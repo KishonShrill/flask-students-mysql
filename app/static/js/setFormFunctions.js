@@ -1,24 +1,18 @@
 function setSearchForm(destination) {
   const searchForm = document.getElementById('searchForm');
   const query = document.getElementById('search').value;
-  const option = document.getElementById('searchOption').value;
   
-  if ('student' == destination) {
+  if ('students' == destination) {
+    const option = document.getElementById('searchOption').value;
     const selection = document.getElementById('studentSelection').value;
     searchForm.action = "/students/search/sort=" + selection + "?q=" + query + "&course=" + option;
   } else if ('programs' == destination) {
+    const option = document.getElementById('searchOption').value;
     searchForm.action = "/programs/search?q=" + query + "&college=" + option;
   } else {
-    searchForm.action = "/colleges/search?q=" + query + "&college=" + option;
+    searchForm.action = "/colleges/search?q=" + query;
   }
   searchForm.submit();
-}
-
-function setCreateSubmitForm() {
-  const createForm = document.getElementById('editForm');
-
-  createForm.action = window.location.pathname + "/submit";
-  createForm.submit();
 }
 
 function setEditForm(chosen_id, type) {
@@ -28,8 +22,8 @@ function setEditForm(chosen_id, type) {
   editForm.submit();
 }
 
-function setEditSubmitForm() {
-  const editForm = document.getElementById('editStudentForm');
+function setSubmitForm() {
+  const editForm = document.getElementById('form');
 
   editForm.action = window.location.pathname + "/submit";
   editForm.submit();

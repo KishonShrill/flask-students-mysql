@@ -54,6 +54,8 @@ aside {
   margin-right: 1rem;
 }
 
+button.search {border-radius: 0px 4px 4px 0px;}
+input#search {border-radius: 4px 0px 0px 4px;}
 
 main {
   grid-area: content;

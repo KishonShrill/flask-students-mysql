@@ -2,14 +2,14 @@
 
 {% block head %}
   <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}"> 
-  <script type="text/javascript" src="{{ url_for('static', filename='js/editStudent.js' )}}"></script>
+  <script type="text/javascript" src="{{ url_for('static', filename='js/formSubmitter.js' )}}"></script>
   <title>Create Student</title>
 {% endblock %}
 
 {% block body %}
   <main data-modal-edit class="crud">
-    <form class="crud__block" id="editForm" method="POST" action="">
-      {{ studentForm.csrf_token }}
+    <form class="crud__block" id="form" method="POST" action="">
+      {{ form.csrf_token }}
       <div class="crud-form-container">
         <header class="crud-form-header">
           <h1>Create Student Details</h1>
@@ -24,44 +24,47 @@
               gap: 1rem;
             ">
               <div class="crud-form-inputs">
-                {{ studentForm.studentFirstName }}
-                {{ studentForm.studentFirstName.label }}
+                {{ form.studentFirstName }}
+                {{ form.studentFirstName.label }}
               </div>
               <div class="crud-form-inputs">
-                {{ studentForm.studentLastName }}
-                {{ studentForm.studentLastName.label }}
+                {{ form.studentLastName }}
+                {{ form.studentLastName.label }}
               </div>
             </div>
           </div>
           <div>
             <span>Student ID</span>
             <div class="crud-form-inputs">
-              {{ studentForm.studentID }}
-              {{ studentForm.studentID.label }}
+              {{ form.studentID }}
+              {{ form.studentID.label }}
             </div>
           </div>
           <div>
             <span>Student Details</span>
             <div class="crud-form-inputs">
-              {{ studentForm.studentYear }}
-              {{ studentForm.studentYear.label }}
+              {{ form.studentYear }}
+              {{ form.studentYear.label }}
             </div>
             <div class="crud-form-inputs">
-              {{ studentForm.studentGender }}
-              {{ studentForm.studentGender.label }}
+              {{ form.studentGender }}
+              {{ form.studentGender.label }}
             </div>
             <div class="crud-form-inputs">
-              {{ studentForm.studentCourse }}
-              {{ studentForm.studentCourse.label }}
+              {{ form.studentCourse }}
+              {{ form.studentCourse.label }}
             </div>
+            {% if '/students/edit/' in request.path %}
+            <input type="hidden" name="student_id-edit" id="student_id-edit" value="{{ student_id }}">
+            {% endif %}
           </div>
         </main>
       </div>
     </form>
     <footer class="form__actions">
       <button class="delete" onclick="location.href='/students';">Cancel</button>
-      <button class="add disabled" name="confirmEdit" editSubmit-confirmation onclick="confirmationModal(document.getElementById('studentID').value, 'singleEdit')" disabled>Submit
-        <span class="tooltiptext" id="edit-confirm-tooltip">There are no changes...</span>
+      <button class="add disabled" name="confirmEdit" submit-confirmation onclick="confirmationModal(document.getElementById('studentID').value, 'singleEdit')" disabled>Submit
+        <span class="tooltiptext" id="confirm-tooltip">There are no changes...</span>
       </button>
     </footer>
   </main>
@@ -71,11 +74,11 @@
   <dialog data-modal-delete class="modal">
     <main>
       <p>Are you sure want to proceed with the update?</p>
-      <p style="text-align: center;">student: <span bold student-number></span></p>
+      <p style="text-align: center;">student: <span bold chosen-id></span></p>
 
       <div class="modal__actions">
         <button class="delete" data-close-modal-delete>Cancel</button>
-        <button class="add" value="" delete-confirmation onclick="setCreateSubmitForm()">Confirm</button>
+        <button class="add" value="" delete-confirmation onclick="setSubmitForm()">Confirm</button>
       </div>
     </main>
   </dialog>

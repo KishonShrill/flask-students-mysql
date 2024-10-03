@@ -90,7 +90,7 @@ def create():
     studentForm = StudentForm()
     courses = databaseModel.DatabaseManager.allCourses()
     studentForm.studentCourse.choices = [(None, 'Not Enrolled')] + [(course[1], course[0]) for course in courses]
-    return render_template('./crud_blueprint/createStudent.html', studentForm=studentForm)
+    return render_template('./crud_blueprint/student.html', form=studentForm)
 
 @student_bp.route('/students/create/submit', methods=['POST','GET'])
 def createSubmit():
@@ -153,7 +153,7 @@ def edit(student_id):
 
         studentForm.studentCourse.data = student[0][5]  # Assuming student[5] is the current course code
 
-        return render_template('./crud_blueprint/editStudent.html', studentForm=studentForm, student_id=student_id)
+        return render_template('./crud_blueprint/student.html', form=studentForm, student_id=student_id)
     
     else:
         flash(f"Student {student_id} does not exist!", "warning")
@@ -206,7 +206,7 @@ def delete():
         delete_item = request.form.get('delete-chosen_id')
         print(f"Student to delete: {delete_item}")
 
-        # databaseModel.DatabaseManager.deleteStudent(delete_item)
+        databaseModel.DatabaseManager.deleteStudent(delete_item)
 
         flash(f"Student {delete_item} has been deleted successfully!", "success")
         return redirect(url_for('student.index'))

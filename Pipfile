@@ -4,11 +4,21 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-flask-mysqldb = "*"
-flask-mysql = "*"
-python-dotenv = "*"
-flask = "*"
-flask-wtf = "*"
+flask-mysqldb = "==2.0.0"
+flask-mysql = "==1.5.2"
+python-dotenv = "==1.0.1"
+flask = "==3.0.3"
+flask-wtf = "==1.2.1"
+blinker = "==1.8.2"
+click = "==8.1.7"
+colorama = "==0.4.6"
+itsdangerous = "==2.2.0"
+jinja2 = "==3.1.4"
+markupsafe = "==2.1.5"
+mysqlclient = "==2.2.4"
+pymysql = "==1.1.1"
+werkzeug = "==3.0.4"
+wtforms = "==3.1.2"
 
 [dev-packages]
 

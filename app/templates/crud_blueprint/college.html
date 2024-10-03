@@ -2,14 +2,14 @@
 
 {% block head %}
   <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}"> 
-  <script type="text/javascript" src="{{ url_for('static', filename='js/editStudent.js' )}}"></script>
+  <script type="text/javascript" src="{{ url_for('static', filename='js/formSubmitter.js' )}}"></script>
   <title>Edit Student</title>
 {% endblock %}
 
 {% block body %}
   <main data-modal-edit class="crud">
-    <form class="crud__block" id="editStudentForm" method="POST" action="">
-      {{ programForm.csrf_token }}
+    <form class="crud__block" id="form" method="POST" action="">
+      {{ form.csrf_token }}
       <div class="crud-form-container">
         <header class="crud-form-header">
           <h1>Edit Program Details</h1>
@@ -24,29 +24,25 @@
               gap: 1rem;
             ">
               <div class="crud-form-inputs">
-                {{ programForm.programName }}
-                {{ programForm.programName.label }}
+                {{ form.collegeName }}
+                {{ form.collegeName.label }}
               </div>
               <div class="crud-form-inputs">
-                {{ programForm.programCode }}
-                {{ programForm.programCode.label }}
+                {{ form.collegeCode }}
+                {{ form.collegeCode.label }}
               </div>
-            </div>
-          </div>
-          <div>
-            <span>Program Details</span>
-            <div class="crud-form-inputs">
-              {{ programForm.programCollege }}
-              {{ programForm.programCollege.label }}
+              {% if '/colleges/edit/' in request.path %}
+              <input type="hidden" name="college_id-edit" id="college_id-edit" value="{{ college_id }}">
+              {% endif %}
             </div>
           </div>
         </main>
       </div>
     </form>
     <footer class="form__actions">
-      <button class="delete" onclick="location.href='/programs';">Cancel</button>
-      <button class="add disabled" name="confirmEdit" editSubmit-confirmation onclick="confirmationModal(document.getElementById('programCode').value, 'singleEdit')" disabled>Submit
-        <span class="tooltiptext" id="edit-confirm-tooltip">There are no changes...</span>
+      <button class="delete" onclick="location.href='/colleges';">Cancel</button>
+      <button class="add disabled" name="confirmEdit" submit-confirmation onclick="confirmationModal(document.getElementById('collegeCode').value, 'singleEdit')" disabled>Submit
+        <span class="tooltiptext" id="confirm-tooltip">There are no changes...</span>
       </button>
     </footer>
   </main>
@@ -60,7 +56,7 @@
 
       <div class="modal__actions">
         <button class="delete" data-close-modal-delete>Cancel</button>
-        <button class="add" value="" delete-confirmation onclick="setEditSubmitForm()">Confirm</button>
+        <button class="add" value="" delete-confirmation onclick="setSubmitForm()">Confirm</button>
       </div>
     </main>
   </dialog>

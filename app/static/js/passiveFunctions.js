@@ -12,16 +12,4 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
   closeButtonDelete.addEventListener("click", () => {deleteModal.close()})
-
-
-  // Delete Submission
-  // Delete Submission
-  // Delete Submission
-  const studentLabel = document.querySelector("[student-number]");
-  const deleteButton = document.querySelector("[delete-confirmation]");
-
-  deleteButton.addEventListener("click", () => {
-    console.log("I HAVE BEEN PRESSED");
-    submitSingleDeleteForm(studentLabel.innerText);
-  });
 });

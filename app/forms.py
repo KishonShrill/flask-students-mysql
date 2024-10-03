@@ -14,7 +14,6 @@ class SearchForm(FlaskForm):
         ('gender', 'Gender')])
     
 class StudentForm(FlaskForm):
-    # Edit Student Form
     studentFirstName = StringField('First Name', validators=[DataRequired()])
     studentLastName = StringField('Last Name', validators=[DataRequired()])
     studentID = StringField('Please enter a valid ID number.', validators=[
@@ -25,7 +24,10 @@ class StudentForm(FlaskForm):
     studentCourse = SelectField('Select a course', choices = [], validators=[DataRequired()])
 
 class ProgramForm(FlaskForm):
-    # Edit Student Form
     programName = StringField('Program Name', validators=[DataRequired()])
     programCode = StringField('Program Code', validators=[DataRequired()])
     programCollege = SelectField('Select a college', choices = [], validators=[DataRequired()])
+
+class CollegeForm(FlaskForm):
+    collegeName = StringField('College Name', validators=[DataRequired()])
+    collegeCode = StringField('College Code', validators=[DataRequired()])

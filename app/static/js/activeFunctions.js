@@ -34,28 +34,26 @@ function toggleButton() {
 function confirmationModal(chosen_id, category) {
   console.log(chosen_id + ":" + category);
 
-  if (category == "singleDelete") {
-    const modal = document.querySelector("[data-modal-delete]");
-    const studentLabel = document.querySelector("[chosen-id]");
-    modal.showModal();
+  const modal = document.querySelector("[data-modal-delete]");
+  const studentLabel = document.querySelector("[chosen-id]");
+  modal.showModal();
 
-    studentLabel.innerText = chosen_id;
-    studentLabel.style.fontWeight = "bold";
+  const confirmationButton = document.querySelector("button[delete-confirmation]");
+  if (chosen_id == 'MULTIPLE') {
+    // Modify the button's properties
+    confirmationButton.setAttribute("onclick", "deleteAll()");  // Change onclick function
+    console.log("olSGBDFUOBWSEVBFSDVB")
   }
 
-  if (category == "singleEdit") {
-    const modal = document.querySelector("[data-modal-delete]");
-    const studentLabel = document.querySelector("[chosen-id]");
-    modal.showModal();
-
-    studentLabel.innerText = chosen_id;
-    studentLabel.style.fontWeight = "bold";
-  }
+  studentLabel.innerText = chosen_id;
+  studentLabel.style.fontWeight = "bold";
+  console.log(chosen_id)
 }
 
 
 function deleteAll() {
-  e.preventDefault();
+  const deleteSelectedForm = document.getElementById('deleteSelectedForm')
+  
   let selectedIDs = [];
   const checkboxes = document.querySelectorAll('.checkbox');
 
@@ -64,27 +62,6 @@ function deleteAll() {
       selectedIDs.push(checkbox.value);
     }
   });
-}
-
-function validateStudent() {
-  const fnInput = document.getElementById('studentFirstName');
-  const lnInput = document.getElementById('studentLastName');
-  const idInput = document.getElementById('studentID');
-  const regexName = /^[A-Za-z\s]+$/;
-  const regexID = /^\d{4}-\d{4}$/;
-
-  if (!regexName.test(fnInput.value)) {
-      alert("Invalid First Name: Only letters and spaces are allowed and must NOT be empty.");
-      return false; // Prevent form submission
-  }
-  if (!regexName.test(lnInput.value)) {
-    alert("Invalid Last Name: Only letters and spaces are allowed and must NOT be empty.");
-    return false; // Prevent form submission
-  }
-  if (!regexID.test(idInput.value)) {
-    alert("Invalid format for Student ID. Must be in the format 1234-5678.");
-    return false; // Prevent form submission
-  }
   
-  return true;
+  deleteSelectedForm.submit();
 }

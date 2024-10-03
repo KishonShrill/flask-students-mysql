@@ -6,22 +6,22 @@
 {% endblock %}
 
 {% block body %}
+  <form class="absolute" id="singleEditForm" method="POST" action="">{{ programForm.csrf_token }}</form>
+  <form class="absolute" id="createForm" method="POST" action="{{ url_for('programs.create') }}">{{ programForm.csrf_token }}</form>
+  <form class="absolute" id="deleteSelectedForm" method="POST" action="/programs/delete_checked/">{{ searchForm.csrf_token }}</form>
+  <form class="absolute" id="singleDeleteForm" method="POST" action="/programs/delete">{{ searchForm.csrf_token }}
+    <input type="hidden" name="delete-chosen_id" id="delete-chosen_id" value="">
+  </form>
+  <form id="searchForm" class="content__header-form" method="POST" action="">{{ searchForm.csrf_token }}</form>
   <main>
-    <form class="absolute" id="singleEditForm" method="POST" action="">{{ programForm.csrf_token }}</form>
-    <form class="absolute" id="createForm" method="POST" action="{{ url_for('programs.create') }}">{{ programForm.csrf_token }}</form>
-    <form class="absolute" id="deleteSelectedForm" method="POST" action="/programs/delete_checked/">{{ searchForm.csrf_token }}</form>
-    <form class="absolute" id="singleDeleteForm" method="POST" action="/programs/delete">{{ searchForm.csrf_token }}
-      <input type="hidden" name="delete-chosen_id" id="delete-chosen_id" value="">
-    </form>
     <header class="content__header">
-      <form id="searchForm" class="content__header-form" method="POST" action="">
-        {{ searchForm.csrf_token }}
+      <div class="content__header-form">
         <div>
-          <button class="delete" hidden="hidden" id="deleteAll" onclick="deleteAll()" type="submit" form="deleteSelectedForm">Delete All</button>
+          <button class="delete" hidden="hidden" id="deleteAll" onclick="confirmationModal('MULTIPLE', 'MULTIPLE')">Delete All</button>
           <button class="add action" type="submit" form="createForm">Add</button>
         </div>
-        <p>{{ searchForm.search }} <button class="search" onclick="setSearchForm('programs')">Search</button> {{ searchForm.searchOption }} </p>
-      </form>
+        <p>{{ searchForm.search }}<button class="search" onclick="setSearchForm('programs')">Search</button> {{ searchForm.searchOption }}</p>
+      </div>
     </header>
     <div class="content__table">
       <div class="content__table-header-courses">
@@ -31,7 +31,7 @@
         <p><b>College Code</b></p>
         <p><b>Actions</b></p>
       </div>
-      <div>
+      <div style="height: 100%; scrollbar-gutter: stable;">
         {% if results %}
           {% for program in results %}
             <div class="content__table-data-courses">
@@ -46,13 +46,16 @@
               {% endif %}
 
               <div class="actions-div">
-                <button class="edit action" onclick="setEditForm('{{ program[1] }}', 'programs')">Edit</button>
-                <button class="delete action" name="delete" onclick="confirmationModal('{{ program[1] }}', 'singleDelete')">Delete</button>
+                <button class="edit action" onclick="setEditForm('{{ program[1] }}', 'programs')"><img class="icon" src="{{ url_for('static', filename='images/pencil-edit-01-stroke-rounded.svg')}}" alt="Edit"></button>
+                <button class="delete action" name="delete" onclick="confirmationModal('{{ program[1] }}', 'singleDelete')"><img class="icon" src="{{ url_for('static', filename='images/delete-02-stroke-rounded.svg')}}" alt="Delete"></button>
               </div>
             </div>
           {% endfor %}
         {% elif query %}
-          <p>No results found for "{{ query }}".</p>
+          <div class="not-found">
+            <p style="display: block;">No results found for "{{ query }}".
+            </p>
+          </div>
         {% endif %}
       </div>
     </div>
@@ -60,7 +63,6 @@
 {% endblock %}
 
 {% block confirmationModal %}
-  <!-- TODO: MODIFY FOR PROGRAMS -->
   <dialog data-modal-delete class="modal">
     <main>
       <p>Are you sure want to delete?</p>
@@ -71,7 +73,6 @@
       </div>
     </main>
   </dialog>
-  <!-- TODO: MAKE A DIALOG FOR MULTI DELETE -->
 {% endblock %}
 
 {% block alertsOverlay %}

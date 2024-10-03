@@ -58,12 +58,13 @@ def create():
     programForm = ProgramForm()
     colleges = databaseModel.DatabaseManager.allColleges()
     programForm.programCollege.choices = [(college[1], college[0]) for college in colleges]
-    return render_template('./crud_blueprint/createProgram.html', programForm=programForm)
+    return render_template('./crud_blueprint/program.html', form=programForm)
 
 @courses_bp.route('/programs/create/submit', methods=['POST','GET'])
 def createSubmit():
     if request.method == "POST":
         name_regex = regex.compile(r'^[A-Za-z\s]+$')
+        code_regex = regex.compile(r'^[A-Za-z]+$')
 
         newProgramName = request.form.get('programName')
         newProgramCode = request.form.get('programCode')
@@ -73,8 +74,8 @@ def createSubmit():
         if not newProgramName or len(newProgramName) < 3 or not name_regex.match(newProgramName):
             flash("Invalid Program Name: Only letters and spaces are allowed and must NOT be empty.", "warning")
             return redirect(url_for('programs.create'))
-        if not newProgramCode or len(newProgramCode) < 3 or not name_regex.match(newProgramCode):
-            flash("Invalid Program Code: Only letters and spaces are allowed and must NOT be empty.", "warning")
+        if not newProgramCode or len(newProgramCode) < 3 or not code_regex.match(newProgramCode):
+            flash("Invalid Program Code: Only letters are allowed and must NOT be empty.", "warning")
             return redirect(url_for('programs.create'))
         
         isCourseExist = databaseModel.DatabaseManager.createProgram(newProgramName, newProgramCode, newProgramCollege)
@@ -109,7 +110,7 @@ def edit(program_id):
         programForm.programCollege.choices = [(course[1], course[0]) for course in courses]
         programForm.programCollege.data = program[0][2]  # Assuming program[5] is the current course code
 
-        return render_template('./crud_blueprint/editProgram.html', programForm=programForm, program_id=program_id)
+        return render_template('./crud_blueprint/program.html', form=programForm, program_id=program_id)
     
     else:
         flash(f"Program {program_id} does not exist!", "warning")

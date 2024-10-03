@@ -84,13 +84,13 @@
   padding-block: 0.5rem;
   padding-right: 1.1rem;
   display: grid;
-  grid-template-columns: 1.8rem 2fr 2fr 2fr 1fr 2fr 1fr 2fr;
+  grid-template-columns: 1.8rem 2fr 2fr 2fr 1fr 2fr 1fr 10rem;
   border-bottom: 1px solid #29414F;
   background-color: #A8B2B8;
 }
 .content__table-data-students {
   display: grid;
-  grid-template-columns: 1.8rem 2fr 2fr 2fr 1fr 2fr 1fr 2fr;
+  grid-template-columns: 1.8rem 2fr 2fr 2fr 1fr 2fr 1fr 10rem;
   border-bottom: 1px solid #29414F;
 }
 /* courses */
@@ -98,13 +98,13 @@
   padding-block: 0.5rem;
   padding-right: 1.1rem;
   display: grid;
-  grid-template-columns: 1.8rem 2fr 2fr 1fr 2fr;
+  grid-template-columns: 1.8rem 2fr 2fr 1fr 10rem;
   border-bottom: 1px solid #29414F;
   background-color: #A8B2B8;
 }
 .content__table-data-courses {
   display: grid;
-  grid-template-columns: 1.8rem 2fr 2fr 1fr 2fr;
+  grid-template-columns: 1.8rem 2fr 2fr 1fr 10rem;
   border-bottom: 1px solid #29414F;
 }
 /* college */
@@ -112,13 +112,13 @@
   padding-block: 0.5rem;
   padding-right: 1.1rem;
   display: grid;
-  grid-template-columns: 1.8rem 2fr 1fr 2fr;
+  grid-template-columns: 1.8rem 1fr 2fr 10rem;
   border-bottom: 1px solid #29414F;
   background-color: #A8B2B8;
 }
 .content__table-data-colleges {
   display: grid;
-  grid-template-columns: 1.8rem 2fr 1fr 2fr;
+  grid-template-columns: 1.8rem 1fr 2fr 10rem;
   border-bottom: 1px solid #29414F;
 }
 
@@ -156,7 +156,8 @@ button.delete:hover {
 }
 button.search {
   color: black;
-  border: 1px solid grey;
+  border: 1px solid #b8bdc9;
+  border-left: none;
   background-color: white;
 }
 button.disabled {
@@ -183,14 +184,19 @@ select {
 
 button,
 input#clickAll,
-input#search,
 input.checkbox,
 select {
   cursor: pointer;
 }
-
-input#search {
-  cursor: text;
+input#search {cursor: text;}
+input:user-valid,
+select:user-valid {
+  border-width: 2px;
+  border-color: #247244;
+}
+input:user-invalid {
+  border-width: 2px;
+  border-color: #ff3269;
 }
 
 label {
@@ -209,6 +215,14 @@ label {
   margin-top: 2rem;
   display: flex;
   justify-content: space-between;
+}
+
+.not-found {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Tooltip Styles */
@@ -246,4 +260,26 @@ button[name="confirmEdit"]:hover .tooltiptext {
 
 .stat-card {
   background-color: white;
+}
+
+/* Scrollbar Styles */
+/* Scrollbar Styles */
+/* Scrollbar Styles */
+/* Style the entire scrollbar */
+::-webkit-scrollbar {
+  width: 20px; /* Set the width of the scrollbar */
+}
+/* Style the draggable part of the scrollbar (thumb) */
+::-webkit-scrollbar-thumb {
+  background-color: #3498db; /* Thumb color */
+  border-radius: 50rem; /* Rounded corners for the thumb */
+}
+/* Style the background area of the scrollbar (track) */
+::-webkit-scrollbar-track {
+  background: #f1f1f1; /* Track background color */
+}
+/* Optional: Add space around the thumb */
+::-webkit-scrollbar-track-piece {
+  background: transparent;
+  margin: 2px; /* Adds spacing */
 }

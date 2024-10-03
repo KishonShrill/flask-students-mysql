@@ -13,15 +13,15 @@
     <form class="absolute" id="singleDeleteForm" method="POST" action="/students/delete">{{ searchForm.csrf_token }}
       <input type="hidden" name="delete-chosen_id" id="delete-chosen_id" value="">
     </form>
+    <form class="absolute" id="searchForm" method="POST" action="">{{ searchForm.csrf_token }}</form>
     <header class="content__header">
-      <form id="searchForm" class="content__header-form" method="POST" action="">
-        {{ searchForm.csrf_token }}
+      <div class="content__header-form">
         <div>
-          <button class="delete" hidden="hidden" id="deleteAll" onclick="deleteAll()" type="submit" form="deleteSelectedForm">Delete All</button>
+          <button class="delete" hidden="hidden" id="deleteAll" onclick="confirmationModal('MULTIPLE', 'MULTIPLE')">Delete All</button>
           <button class="add action" type="submit" form="createForm">Add</button>
         </div>
-        <p>{{ searchForm.search }} <button class="search" onclick="setSearchForm('student')">Search</button> {{ searchForm.studentSelection }} {{ searchForm.searchOption }} </p>
-      </form>
+        <p>{{ searchForm.search }}<button class="search" onclick="setSearchForm('students')">Search</button> {{ searchForm.studentSelection }} {{ searchForm.searchOption }}</p>
+      </div>
     </header>
     <div class="content__table">
       <div class="content__table-header-students">
@@ -34,7 +34,7 @@
         <p><b>CourseID</b></p>
         <p><b>Actions</b></p>
       </div>
-      <div class="content__table-data-wrapper">
+      <div style="height: 100%; scrollbar-gutter: stable;">
         {% if results %}
           {% for student in results %}
             <div class="content__table-data-students">
@@ -67,7 +67,10 @@
             </div>
           {% endfor %}
         {% elif query %}
-          <p>No results found for "{{ query }}".</p>
+          <div class="not-found">
+            <p style="display: block;">No results found for "{{ query }}".
+            </p>
+          </div>
         {% endif %}
       </div>
     </div>

@@ -59,6 +59,22 @@ class DatabaseManager(object):
             print(f"Error creating course: {e}")
             mysql.connection.rollback()
             return False
+        
+    @classmethod
+    def createCollege(cls, newName, newCode):
+        try:
+            cursor = mysql.connection.cursor()
+            cursor.execute("""
+                INSERT INTO college(collegename, collegecode) VALUE
+                (%s, %s);
+            """, (newName, newCode))
+            mysql.connection.commit()
+            return True
+        
+        except Exception as e:
+            print(f"Error creating college: {e}")
+            mysql.connection.rollback()
+            return False
 
 
     """ UPDATE METHOD """    
@@ -131,6 +147,19 @@ class DatabaseManager(object):
         try:
             cursor = mysql.connection.cursor()
             sql = "DELETE FROM course WHERE CourseCode = %s"
+            cursor.execute(sql, (course_id,))
+            mysql.connection.commit()
+            return True
+        except Exception as e:
+            print(f"Error deleting program: {e}")
+            mysql.connection.rollback()
+            return False
+        
+    @classmethod
+    def deleteColleges(cls, course_id: str):
+        try:
+            cursor = mysql.connection.cursor()
+            sql = "DELETE FROM college WHERE collegecode = %s"
             cursor.execute(sql, (course_id,))
             mysql.connection.commit()
             return True
@@ -341,6 +370,17 @@ class DatabaseManager(object):
             SELECT *
             FROM course
             WHERE course.coursecode = %s
+        """, (args,))
+        result = cursor.fetchall()
+        return result
+    
+    @classmethod
+    def queryCollege(cls, args: str):
+        cursor = mysql.connection.cursor()
+        cursor.execute("""
+            SELECT *
+            FROM college
+            WHERE college.collegename = %s
         """, (args,))
         result = cursor.fetchall()
         return result

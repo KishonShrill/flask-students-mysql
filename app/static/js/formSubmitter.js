@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
-  const confirmButton = document.querySelector('.add[editSubmit-confirmation]'); // The confirm button
-  const editForm = document.getElementById('editStudentForm'); // The form element
-  const tooltip = document.getElementById('edit-confirm-tooltip');
+  const confirmButton = document.querySelector('.add[submit-confirmation]'); // The confirm button
+  const editForm = document.getElementById('form'); // The form element
+  const tooltip = document.getElementById('confirm-tooltip');
   let initialFormData = new FormData(editForm); // Get the initial form data
 
   // Disable the confirm button initially
