@@ -42,20 +42,34 @@ Before you begin, ensure you have met the following requirements:
 
 2. **Install the required Python packages**:
     ```bash
-    pip install -r requirements.txt
+    pipenv install -r requirements.txt
     ```
 
 3. **Configure the database**:
-   - Create a MySQL database named `student_db`.
+   - Create a MySQL database named `enrolledstudents`.
    - Update the `config.py` file with your MySQL credentials.
    - Run the following command to initialize the database:
-     ```bash
-     python init_db.py
-     ```
+        - Enter MySQL Terminal
+        ```bash
+        mysql -u root -p
+        ```
+        - Inside MySQL Terminal
+        ```sql
+        CREATE DATABASE enrolledstudents;
+        EXIT;
+        ```
+        - Back to Bash Terminal
+        ```bash
+        mysql -u root -p enrolledstudents < initSQLData.sql
+        ```
 
 4. **Run the Flask application**:
     ```bash
-    pipenv run flask --app run.py run (--debug) << this is optional
+    flask run --debug
+    ```
+    ⚠️ Use this command below if it doesn't work ⚠️
+    ```bash
+    pipenv run flask --app run.py run --debug
     ```
 
 5. **Access the application**:
@@ -68,14 +82,6 @@ Before you begin, ensure you have met the following requirements:
 - **Updating Student Information**: Select a student from the list and use the "Edit" option to update their details.
 - **Deleting a Student**: Choose a student from the list and use the "Delete" option to remove their record from the database.
 
-## Contributing
-
-Contributions are always welcome! Please feel free to submit a Pull Request.
-
-## License
-
-This project is licensed under the MIT License. See the `LICENSE` file for more details.
-
 ---
 
-Developed by [Your Name](https://github.com/yourusername).
+Developed by [Chriscent Pingol](https://github.com/KishonShrill).
