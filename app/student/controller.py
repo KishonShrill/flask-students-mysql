@@ -139,7 +139,7 @@ def createSubmit():
 def edit(student_id):
     student_id = student_id or request.args.get('id')
     student = databaseModel.DatabaseManager.queryStudentWithID(student_id)
-    print(student)
+
     if student:
         studentForm = StudentForm()
 
@@ -175,10 +175,10 @@ def editSubmit(student_id):
         newCourse = request.form.get('studentCourse')
 
         # Input validation
-        if not newFirstName or len(newFirstName) < 2 or not name_regex.match(newFirstName):
+        if not newFirstName or len(newFirstName) < 2 or len(newFirstName) > 199 or not name_regex.match(newFirstName):
             flash("Invalid First Name: Only letters and spaces are allowed and must NOT be empty.", "warning")
             return redirect(url_for('student.edit', student_id=student_id))
-        if not newLastName or len(newLastName) < 2 or not name_regex.match(newLastName):
+        if not newLastName or len(newLastName) < 2 or len(newLastName) > 199 or not name_regex.match(newLastName):
             flash("Invalid Last Name: Only letters and spaces are allowed and must NOT be empty.", "warning")
             return redirect(url_for('student.edit', student_id=student_id))
         if not newID or len(newID) != 9:
@@ -225,8 +225,6 @@ def delete_checked():
     if request.method == "POST":
         checked_items = request.form.getlist('items')
     
-        print(f"Checked items for deletion: {checked_items}")
-
         for student_id in checked_items:
             try:
                 databaseModel.DatabaseManager.deleteStudent(student_id)

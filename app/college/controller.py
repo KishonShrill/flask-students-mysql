@@ -4,6 +4,7 @@ import app.databaseModel as databaseModel
 import re as regex
 from app.forms import *
 
+
 @college_bp.route('/colleges')
 @college_bp.route('/colleges/')
 def index():
@@ -49,11 +50,11 @@ def createSubmit():
         newCollegeCode = request.form.get('collegeCode')
 
         # Input validation
-        if not newCollegeName or len(newCollegeName) < 3 or not name_regex.match(newCollegeName):
+        if not newCollegeName or len(newCollegeName) < 3 or len(newCollegeName) > 255 or not name_regex.match(newCollegeName):
             flash("Invalid College Name: Only letters and spaces are allowed and must NOT be empty.", "warning")
             return redirect(url_for('colleges.create'))
-        if not newCollegeCode or len(newCollegeCode) < 3 or not code_regex.match(newCollegeCode):
-            flash("Invalid College Code: CAPITAL letters only and must NOT be empty.", "warning")
+        if not newCollegeCode or len(newCollegeCode) < 3 or len(newCollegeCode) > 20 or not code_regex.match(newCollegeCode):
+            flash("Invalid College Code: 20 CAPITAL letters only and must NOT be empty.", "warning")
             return redirect(url_for('colleges.create'))
         
         isCollegeExist = databaseModel.DatabaseManager.createCollege(newCollegeName, newCollegeCode)

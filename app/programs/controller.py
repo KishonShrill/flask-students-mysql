@@ -71,11 +71,11 @@ def createSubmit():
         newProgramCollege = request.form.get('programCollege')
 
         # Input validation
-        if not newProgramName or len(newProgramName) < 3 or not name_regex.match(newProgramName):
+        if not newProgramName or len(newProgramName) < 3 or len(newProgramName) > 255 or not name_regex.match(newProgramName):
             flash("Invalid Program Name: Only letters and spaces are allowed and must NOT be empty.", "warning")
             return redirect(url_for('programs.create'))
-        if not newProgramCode or len(newProgramCode) < 3 or not code_regex.match(newProgramCode):
-            flash("Invalid Program Code: Only letters are allowed and must NOT be empty.", "warning")
+        if not newProgramCode or len(newProgramCode) < 3 or len(newProgramCode) > 20 or not code_regex.match(newProgramCode):
+            flash("Invalid Program Code: Only 20 letters are allowed and must NOT be empty.", "warning")
             return redirect(url_for('programs.create'))
         
         isCourseExist = databaseModel.DatabaseManager.createProgram(newProgramName, newProgramCode, newProgramCollege)
@@ -132,7 +132,7 @@ def editSubmit(program_id):
             flash("Invalid Program Name: Only letters and spaces are allowed and must NOT be empty.", "warning")
             return redirect(url_for('programs.edit', program_id=program_id))
         if not newProgramCode or len(newProgramCode) < 3 or len(newProgramCode) > 20 or not code_regex.match(newProgramCode):
-            flash("Invalid Program Code: CAPITAL letters only are allowed and must NOT be empty.", "warning")
+            flash("Invalid Program Code: CAPITAL letters only and must NOT be empty.", "warning")
             return redirect(url_for('programs.edit', program_id=program_id))
         
         isCommitSuccessful = databaseModel.DatabaseManager.editProgram(oldCode, newProgramName, newProgramCode, newProgramCollege)
@@ -172,8 +172,6 @@ def delete_checked():
     if request.method == "POST":
         checked_items = request.form.getlist('items')
     
-        print(f"Checked items for deletion: {checked_items}")
-
         for program_id in checked_items:
             try:
                 databaseModel.DatabaseManager.deleteProgram(program_id)
