@@ -17,23 +17,23 @@ class DatabaseManager(object):
 
     """ CREATE METHOD """
     @classmethod
-    def createStudent(cls, newFirstName, newLastName, newID, newYear, newGender, newCourse: str):
+    def createStudent(cls, newFirstName, newLastName, newID, newYear, newGender, newCourse: str, profilePicture):
         try:
             cursor = mysql.connection.cursor()
 
             # If newCourse is None, set it to NULL in the query
             if newCourse == "None":
                 query = """
-                    INSERT INTO student(firstname, lastname, id, yearlevel, gender, coursecode) VALUE
-                    (%s, %s, %s, %s, %s, NULL);
+                    INSERT INTO student(firstname, lastname, id, yearlevel, gender, coursecode, profile_url) VALUE
+                    (%s, %s, %s, %s, %s, NULL, %s);
                 """
-                values = (newFirstName, newLastName, newID, newYear, newGender)
+                values = (newFirstName, newLastName, newID, newYear, newGender, profilePicture)
             else:
                 query = """
-                    INSERT INTO student(firstname, lastname, id, yearlevel, gender, coursecode) VALUE
-                    (%s, %s, %s, %s, %s, %s);
+                    INSERT INTO student(firstname, lastname, id, yearlevel, gender, coursecode, profile_url) VALUE
+                    (%s, %s, %s, %s, %s, %s, %s);
                 """
-                values = (newFirstName, newLastName, newID, newYear, newGender, newCourse)
+                values = (newFirstName, newLastName, newID, newYear, newGender, newCourse, profilePicture)
 
             cursor.execute(query, values)
             mysql.connection.commit()
@@ -79,7 +79,7 @@ class DatabaseManager(object):
 
     """ UPDATE METHOD """    
     @classmethod
-    def editStudent(cls, oldID, newFirstName, newLastName, newID, newYear, newGender, newCourse: str):
+    def editStudent(cls, oldID, newFirstName, newLastName, newID, newYear, newGender, newCourse: str, profile_url: str):
         try:
             cursor = mysql.connection.cursor()
 
@@ -87,17 +87,25 @@ class DatabaseManager(object):
             if newCourse == "None":
                 query = """
                     UPDATE student 
-                    SET FirstName = %s, LastName = %s, ID = %s, YearLevel = %s, Gender = %s, CourseCode = NULL
+                    SET FirstName = %s, LastName = %s, ID = %s, YearLevel = %s, Gender = %s, CourseCode = NULL, profile_url = %s
                     WHERE ID = %s
                 """
-                values = (newFirstName, newLastName, newID, newYear, newGender, oldID)
-            else:
+                values = (newFirstName, newLastName, newID, newYear, newGender, profile_url, oldID)
+            # If newCourse is None, set it to NULL in the query
+            elif profile_url == "None":
                 query = """
                     UPDATE student 
-                    SET FirstName = %s, LastName = %s, ID = %s, YearLevel = %s, Gender = %s, CourseCode = %s
+                    SET FirstName = %s, LastName = %s, ID = %s, YearLevel = %s, Gender = %s, CourseCode = %s, profile_url = NULL
                     WHERE ID = %s
                 """
                 values = (newFirstName, newLastName, newID, newYear, newGender, newCourse, oldID)
+            else:
+                query = """
+                    UPDATE student 
+                    SET FirstName = %s, LastName = %s, ID = %s, YearLevel = %s, Gender = %s, CourseCode = %s, profile_url = %s
+                    WHERE ID = %s
+                """
+                values = (newFirstName, newLastName, newID, newYear, newGender, newCourse, profile_url, oldID)
 
             cursor.execute(query, values)
             mysql.connection.commit()
@@ -306,6 +314,20 @@ class DatabaseManager(object):
         cursor = mysql.connection.cursor()
         query = """
             SELECT *
+            FROM student
+            WHERE student.ID LIKE %s
+        """
+        values = ('%' + args + '%',)
+        cursor.execute(query, values)
+        result = cursor.fetchall()
+        return result
+    
+    @classmethod
+    # def queryStudentID(cls, args: str):
+    def queryStudentCloudinaryURL(cls, args: str):
+        cursor = mysql.connection.cursor()
+        query = """
+            SELECT profile_url
             FROM student
             WHERE student.ID LIKE %s
         """

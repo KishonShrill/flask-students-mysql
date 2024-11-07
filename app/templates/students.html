@@ -26,6 +26,7 @@
     <div class="content__table">
       <div class="content__table-header-students">
         <p><input type="checkbox" id="clickAll" onclick="toggleAll(this)"></p>
+        <p></p>
         <p><b>First Name</b></p>
         <p><b>Last Name</b></p>
         <p><b>ID</b></p>
@@ -39,6 +40,7 @@
           {% for student in results %}
             <div class="content__table-data-students">
               <p><input type="checkbox" class="checkbox" name="items" value="{{ student[2] }}" onclick="toggleButton()" form="deleteSelectedForm"></p>
+              <p><object style="height: 2.5rem; width: 2.5rem; border-radius: 50%;" data="{{ student[6] }}" type="image/jpeg"><img style="height: 2.5rem; width: 2.5rem; border-radius: 50%;" src="{{ url_for('static', filename='images/no_profile.jpg')}}" alt="Profile Picture"></object></p>
               <p>{{ student[0] }}</p>
               <p>{{ student[1] }}</p>
               <p>{{ student[2] }}</p>

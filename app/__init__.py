@@ -1,7 +1,9 @@
+import cloudinary
 from flask import Flask
 from flask_mysqldb import MySQL
-from config import DB_USERNAME, DB_PASSWORD, DB_NAME, DB_HOST, SECRET_KEY, BOOTSTRAP_SERVE_LOCAL
 from flask_wtf.csrf import CSRFProtect
+from config import DB_USERNAME, DB_PASSWORD, DB_NAME, DB_HOST, SECRET_KEY, BOOTSTRAP_SERVE_LOCAL
+from config import CLOUD_NAME, API_KEY, API_SECRET
 
 mysql = MySQL()
 
@@ -14,6 +16,16 @@ def create_app(test_config=None):
         MYSQL_DB=DB_NAME,
         MYSQL_HOST=DB_HOST,
         #BOOTSTRAP_SERVE_LOCAL=BOOTSTRAP_SERVE_LOCAL
+    )
+
+    # Set the max upload size to 25MB (in bytes)
+    app.config['MAX_CONTENT_LENGTH'] = 25 * 1024 * 1024  # 25MB
+
+    cloudinary.config(
+        cloud_name=CLOUD_NAME,
+        api_key=API_KEY,
+        api_secret=API_SECRET,
+        secure=True
     )
 
     mysql.init_app(app)

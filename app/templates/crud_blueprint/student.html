@@ -3,12 +3,41 @@
 {% block head %}
   <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}"> 
   <script type="text/javascript" src="{{ url_for('static', filename='js/formSubmitter.js' )}}"></script>
-  <title>Create Student</title>
+  <title>Student Editor</title>
+  <style>
+    #studentUpload {background: #FFFFFF;}
+  </style>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const studentUpload = document.getElementById('studentUpload');
+      const previewImage = document.getElementById('previewImage');
+
+      studentUpload.addEventListener('change', function (event) {
+          const file = event.target.files[0];
+
+          if (file) {
+              const reader = new FileReader();
+
+              // When the file is read successfully
+              reader.onload = function (e) {
+                  previewImage.src = e.target.result;  // Set the image source
+                  previewImage.style.display = 'block';  // Display the image
+              };
+
+              // Read the file as a data URL (base64 string)
+              reader.readAsDataURL(file);
+          } else {
+              previewImage.src = "#";  // Reset image if no file is chosen
+              previewImage.style.display = 'none';  // Hide the image
+          }
+      });
+    });
+  </script>
 {% endblock %}
 
 {% block body %}
   <main data-modal-edit class="crud">
-    <form class="crud__block" id="form" method="POST" action="">
+    <form class="crud__block" id="form" method="POST" enctype="multipart/form-data" action="">
       {{ form.csrf_token }}
       <div class="crud-form-container">
         <header class="crud-form-header">
@@ -16,6 +45,46 @@
         </header>
 
         <main class="crud-form">
+          <div>
+            <div class="crud-form-inputs">
+              <!-- Image preview -->
+              {% if profile_url %}
+                <img id="previewImage" src="{{ profile_url }}" alt="Image Preview" style="width: 200px; height: 200px; margin-bottom: 1rem; align-self: center; border-radius: 50%; object-fit: cover;" />
+              {% else %}
+                <img id="previewImage" src="#" alt="Image Preview" style="display:none; width: 200px; height: 200px; margin-bottom: 1rem; align-self: center; border-radius: 50%; object-fit: cover;"/>
+              {% endif %}
+
+              {% if profile_url %}
+                <div style="
+                display: grid;
+                grid-template-columns: 1fr 45px;
+                justify-content: space-between;
+                gap: 1rem;
+              ">
+              {% else %}
+              <div style="
+                display: grid;
+                grid-template-columns: 1fr;
+                justify-content: space-between;
+                gap: 1rem;
+              ">
+              {% endif %}
+
+                <div class="crud-form-inputs">
+                  {{ form.studentUpload }}
+                  {{ form.studentUpload.label }}
+                </div>
+
+                {% if profile_url %}
+                  <div class="crud-form-inputs">
+                    <!-- Checkbox to Delete Profile Picture -->
+                    <input type="checkbox" id="deleteProfilePicture"  placeholder="Delete Profile Picture" name="deleteProfilePicture" value="true">
+                    <label for="deleteProfilePicture">Delete Profile Picture</label>
+                  </div>
+                {% endif %}
+              </div>
+            </div>
+          </div>
           <div>
             <span>Name</span>
             <div style="

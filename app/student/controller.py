@@ -4,6 +4,11 @@ import app.databaseModel as databaseModel
 import re as regex
 from app.forms import *
 
+import cloudinary.api
+import cloudinary.uploader
+from cloudinary.utils import cloudinary_url
+from werkzeug.utils import secure_filename
+
 
 @student_bp.route('/students')
 @student_bp.route('/students/')
@@ -93,6 +98,8 @@ def create():
 
 @student_bp.route('/students/create/submit', methods=['POST','GET'])
 def createSubmit():
+    form = StudentForm()
+
     if request.method == "POST":
         name_regex = regex.compile(r'^[A-Za-z\s]+$')
         id_regex = regex.compile(r'^\d{4}-\d{4}$')
@@ -103,6 +110,32 @@ def createSubmit():
         newYear = request.form.get('studentYear')
         newGender = request.form.get('studentGender')
         newCourse = request.form.get('studentCourse')
+
+        # Save the profile picture file and initialize cloudinary_url
+        cloudinary_url: str = ""
+        profile_picture = form.studentUpload.data
+        
+
+        if profile_picture:
+            # Secure the filename
+            filename = secure_filename(profile_picture.filename)
+
+            # Upload to Cloudinary
+            try:
+                upload_result = cloudinary.uploader.upload(profile_picture, public_id=filename)
+                cloudinary_url = upload_result.get('secure_url')  # Get the URL of the uploaded image
+
+                # Modify the URL by inserting the transformation string
+                transformation = "c_auto,g_auto,h_500,w_500"
+                cloudinary_url = cloudinary_url.replace("/upload/", f"/upload/{transformation}/")
+                
+                # TODO: cloudinary_url into database
+                print(f"cloudinary_url: {cloudinary_url}")
+
+                flash(f"Profile picture uploaded successfully!", "success")
+            except Exception as e:
+                flash(f"An error occurred during file upload: {str(e)}", "danger")
+                return redirect(url_for('student.create'))
 
         # Input validation
         if not newFirstName or len(newFirstName) < 2 or len(newFirstName) > 199 or not name_regex.match(newFirstName):
@@ -118,7 +151,7 @@ def createSubmit():
             flash("ID must match with pattern ####-####, e.g. 1234-5678", "warning")
             return redirect(url_for('student.create'))
 
-        isStudentExist = databaseModel.DatabaseManager.createStudent(newFirstName, newLastName, newID, newYear, newGender, newCourse)
+        isStudentExist = databaseModel.DatabaseManager.createStudent(newFirstName, newLastName, newID, newYear, newGender, newCourse, cloudinary_url)
 
         if isStudentExist == False:
             flash(f"Student {newID} already exists!", "warning")
@@ -140,6 +173,8 @@ def edit(student_id):
     student_id = student_id or request.args.get('id')
     student = databaseModel.DatabaseManager.queryStudentWithID(student_id)
 
+    print(f"student: {student}")
+
     if student:
         studentForm = StudentForm()
 
@@ -148,13 +183,13 @@ def edit(student_id):
         studentForm.studentID.data = student[0][2]
         studentForm.studentYear.data = student[0][3] 
         studentForm.studentGender.data = student[0][4]
-
         courses = databaseModel.DatabaseManager.allCourses()
         studentForm.studentCourse.choices = [("None", 'Not Enrolled')] + [(course[1], course[0]) for course in courses]
 
         studentForm.studentCourse.data = student[0][5]
+        profile_url = student[0][6]
 
-        return render_template('./crud_blueprint/student.html', form=studentForm, student_id=student_id)
+        return render_template('./crud_blueprint/student.html', form=studentForm, student_id=student_id, profile_url=profile_url)
     
     else:
         flash(f"Student {student_id} does not exist!", "warning")
@@ -162,6 +197,12 @@ def edit(student_id):
 
 @student_bp.route('/students/edit/id=<student_id>/submit', methods=['POST','GET'])
 def editSubmit(student_id):
+    student_id = student_id or request.args.get('id')
+    retrievedURL = databaseModel.DatabaseManager.queryStudentCloudinaryURL(student_id)
+    old_cloudinary_url = retrievedURL[0][0]
+
+    form = StudentForm()
+
     if request.method == "POST":
         name_regex = regex.compile(r'^[A-Za-z\s]+$')
         id_regex = regex.compile(r'^\d{4}-\d{4}$')
@@ -173,6 +214,73 @@ def editSubmit(student_id):
         newYear = request.form.get('studentYear')
         newGender = request.form.get('studentGender')
         newCourse = request.form.get('studentCourse')
+        delete_profile_picture = request.form.get('deleteProfilePicture') == "true"
+
+        # Save the profile picture file and initialize cloudinary_url
+        cloudinary_url: str = ""
+        profile_picture = form.studentUpload.data
+        print(f"profile_picture: {profile_picture}")
+
+        # Delete profile picture if the checkbox is selected
+        if delete_profile_picture and old_cloudinary_url:
+            # Extract the public_id from the URL and delete the image
+            old_public_id = old_cloudinary_url.split('/')[-1]  # Get the filename
+            old_public_id = '.'.join(old_public_id.split('.')[:-1])  # Remove the last extension
+            try:
+                cloudinary.api.delete_resources(old_public_id, resource_type="image", type="upload")
+                print(f"Old image {old_public_id} deleted successfully.")
+                cloudinary_url = "None"  # Clear URL to indicate no profile picture
+                flash("Profile picture removed successfully.", "info")
+            except Exception as delete_error:
+                print(f"Error deleting old image: {str(delete_error)}")
+                flash("An error occurred while trying to delete the profile picture.", "danger")
+
+        if profile_picture:
+            # Secure the filename
+            allowed_extensions = {'png', 'jpg', 'webp'}  # Define allowed file extensions
+            filename = secure_filename(profile_picture.filename)
+            print(f"filename: {filename}") # TODO: Remove this later
+            extension = filename.rsplit('.', 1)[-1].lower()  # Get the file extension
+
+            # Check if the file extension is allowed
+            if extension not in allowed_extensions:
+                flash("Invalid file type! Please upload a PNG, JPG, or WEBP image.", "warning")
+                return redirect(url_for('student.edit', student_id=student_id))
+            
+            # Check the size of the file (optional, you can specify your size limit)
+            max_size = 25 * 1024 * 1024  # Example: 25MB
+            if len(profile_picture.read()) > max_size:
+                flash("File size exceeds the limit of 25MB.", "warning")
+                return redirect(url_for('student.edit', student_id=student_id))
+            
+            profile_picture.seek(0)  # Reset file pointer after reading
+
+            # Upload to Cloudinary
+            try:
+                upload_result = cloudinary.uploader.upload(profile_picture, public_id=filename)
+                cloudinary_url = upload_result.get('secure_url')  # Get the URL of the uploaded image
+
+                # Modify the URL by inserting the transformation string
+                transformation = "c_auto,g_auto,h_500,w_500"
+                cloudinary_url = cloudinary_url.replace("/upload/", f"/upload/{transformation}/")
+                
+                # If the old and new Cloudinary URLs are different, delete the old image
+                if old_cloudinary_url and old_cloudinary_url != cloudinary_url:
+                    # Extract public_id from the old URL to delete it
+                    old_public_id = old_cloudinary_url.split('/')[-1]  # Get the filename
+                    old_public_id = '.'.join(old_public_id.split('.')[:-1])  # Remove the last extension
+
+                    try:
+                        cloudinary.api.delete_resources(old_public_id, resource_type="image", type="upload")
+                        print(f"Old image {old_public_id} deleted successfully.")
+                    except Exception as delete_error:
+                        print(f"Error deleting old image: {str(delete_error)}")
+
+                print(f"cloudinary_url: {cloudinary_url}")
+                flash(f"Profile picture updated successfully!", "success")
+            except Exception as e:
+                flash(f"An error occurred during file upload: {str(e)}", "danger")
+                return redirect(url_for('student.edit', student_id=student_id))
 
         # Input validation
         if not newFirstName or len(newFirstName) < 2 or len(newFirstName) > 199 or not name_regex.match(newFirstName):
@@ -188,7 +296,7 @@ def editSubmit(student_id):
             flash("ID must match with pattern ####-####, e.g. 1234-5678", "warning")
             return redirect(url_for('student.edit', student_id=student_id))
 
-        isCommitSuccessful = databaseModel.DatabaseManager.editStudent(oldID, newFirstName, newLastName, newID, newYear, newGender, newCourse)
+        isCommitSuccessful = databaseModel.DatabaseManager.editStudent(oldID, newFirstName, newLastName, newID, newYear, newGender, newCourse, cloudinary_url)
 
         if isCommitSuccessful:
             flash(f"Student {newID} has been updated successfully!", "success")

@@ -90,7 +90,9 @@ CREATE TABLE IF NOT EXISTS student (
   YearLevel char(1) NOT NULL,
   Gender varchar(10) NOT NULL,
   CourseCode varchar(20) DEFAULT NULL,
+	profile_url TEXT DEFAULT NULL,
   UNIQUE KEY unique_name (FirstName, LastName),
+  UNIQUE KEY unique_id (ID),
   CONSTRAINT fk_student_course FOREIGN KEY (CourseCode) REFERENCES course (CourseCode)
 	ON UPDATE CASCADE
 	ON DELETE SET NULL

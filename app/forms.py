@@ -1,7 +1,8 @@
 # app/forms.py
 import app.databaseModel as databaseModel
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, SelectField
+from flask_wtf.file import FileField, FileAllowed, FileRequired
+from wtforms import StringField, SubmitField, SelectField, ValidationError
 from wtforms.validators import InputRequired, Length, DataRequired, Regexp
 
 class SearchForm(FlaskForm):
@@ -20,8 +21,9 @@ class StudentForm(FlaskForm):
         DataRequired(),
         Length(min=9, max=9)])
     studentYear = SelectField('Year Level', choices=[1,2,3,4,5,6] ,validators=[DataRequired()])
-    studentGender = SelectField('Select a gender', choices=["M", "F", "NB"], validators=[DataRequired()])
+    studentGender = SelectField('Select a gender', choices=["Male", "Female", "Non-Binary"], validators=[DataRequired()])
     studentCourse = SelectField('Select a course', choices = [], validators=[DataRequired()])
+    studentUpload = FileField('Profile picture')
 
 class ProgramForm(FlaskForm):
     programName = StringField('Program Name', validators=[DataRequired()])
@@ -31,3 +33,4 @@ class ProgramForm(FlaskForm):
 class CollegeForm(FlaskForm):
     collegeName = StringField('College Name', validators=[DataRequired()])
     collegeCode = StringField('College Code', validators=[DataRequired()])
+
