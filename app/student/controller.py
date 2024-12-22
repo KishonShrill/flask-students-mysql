@@ -3,6 +3,7 @@ from . import student_bp
 import app.databaseModel as databaseModel
 import re as regex
 from app.forms import *
+import os
 
 import cloudinary.api
 import cloudinary.uploader
@@ -122,6 +123,7 @@ def createSubmit():
 
             # Upload to Cloudinary
             try:
+                filename = os.path.splitext(filename)[0]
                 upload_result = cloudinary.uploader.upload(profile_picture, public_id=filename)
                 cloudinary_url = upload_result.get('secure_url')  # Get the URL of the uploaded image
 
@@ -257,6 +259,7 @@ def editSubmit(student_id):
 
             # Upload to Cloudinary
             try:
+                filename = os.path.splitext(filename)[0]
                 upload_result = cloudinary.uploader.upload(profile_picture, public_id=filename)
                 cloudinary_url = upload_result.get('secure_url')  # Get the URL of the uploaded image
 

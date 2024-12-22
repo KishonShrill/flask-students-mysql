@@ -1,74 +1,54 @@
 {% extends 'master_blueprint/base.html' %}
 
 {% block head %}
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}"> 
-  <script type="text/javascript" src="{{ url_for('static', filename='js/formSubmitter.js' )}}"></script>
-  <title>Student Editor</title>
-  <style>
-    #studentUpload {background: #FFFFFF;}
-  </style>
-  <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      const studentUpload = document.getElementById('studentUpload');
-      const previewImage = document.getElementById('previewImage');
-
-      studentUpload.addEventListener('change', function (event) {
-          const file = event.target.files[0];
-
-          if (file) {
-              const reader = new FileReader();
-
-              // When the file is read successfully
-              reader.onload = function (e) {
-                  previewImage.src = e.target.result;  // Set the image source
-                  previewImage.style.display = 'block';  // Display the image
-              };
-
-              // Read the file as a data URL (base64 string)
-              reader.readAsDataURL(file);
-          } else {
-              previewImage.src = "#";  // Reset image if no file is chosen
-              previewImage.style.display = 'none';  // Hide the image
-          }
-      });
-    });
-  </script>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+<script type="text/javascript" src="{{ url_for('static', filename='js/formSubmitter.js' )}}"></script>
+<title>Student Editor</title>
+<style>
+  #studentUpload {
+    background: #FFFFFF;
+  }
+</style>
 {% endblock %}
 
 {% block body %}
-  <main data-modal-edit class="crud">
-    <form class="crud__block" id="form" method="POST" enctype="multipart/form-data" action="">
-      {{ form.csrf_token }}
-      <div class="crud-form-container">
-        <header class="crud-form-header">
-          <h1>Create Student Details</h1>
-        </header>
+<main data-modal-edit class="crud">
+  <form class="crud__block" id="form" method="POST"
+    enctype="multipart/form-data" action="">
+    {{ form.csrf_token }}
+    <div class="crud-form-container">
+      <header class="crud-form-header">
+        <h1>Create Student Details</h1>
+      </header>
 
-        <main class="crud-form">
-          <div>
-            <div class="crud-form-inputs">
-              <!-- Image preview -->
-              {% if profile_url %}
-                <img id="previewImage" src="{{ profile_url }}" alt="Image Preview" style="width: 200px; height: 200px; margin-bottom: 1rem; align-self: center; border-radius: 50%; object-fit: cover;" />
-              {% else %}
-                <img id="previewImage" src="#" alt="Image Preview" style="display:none; width: 200px; height: 200px; margin-bottom: 1rem; align-self: center; border-radius: 50%; object-fit: cover;"/>
-              {% endif %}
+      <main class="crud-form">
+        <div>
+          <div class="crud-form-inputs">
+            <!-- Image preview -->
+            {% if profile_url %}
+            <img id="previewImage" src="{{ profile_url }}"
+              data="{{ profile_url }}" alt="Image Preview"
+              style="width: 200px; height: 200px; margin-bottom: 1rem; align-self: center; border-radius: 50%; object-fit: cover;" />
+            {% else %}
+            <img id="previewImage" src="#" alt="Image Preview"
+              style="display:none; width: 200px; height: 200px; margin-bottom: 1rem; align-self: center; border-radius: 50%; object-fit: cover;" />
+            {% endif %}
 
-              {% if profile_url %}
-                <div style="
-                display: grid;
-                grid-template-columns: 1fr 45px;
-                justify-content: space-between;
-                gap: 1rem;
-              ">
+            {% if profile_url %}
+            <div style="
+              display: grid;
+              grid-template-columns: 1fr 45px;
+              justify-content: space-between;
+              gap: 1rem;
+            ">
               {% else %}
               <div style="
-                display: grid;
-                grid-template-columns: 1fr;
-                justify-content: space-between;
-                gap: 1rem;
-              ">
-              {% endif %}
+              display: grid;
+              grid-template-columns: 1fr;
+              justify-content: space-between;
+              gap: 1rem;
+            ">
+                {% endif %}
 
                 <div class="crud-form-inputs">
                   {{ form.studentUpload }}
@@ -76,22 +56,25 @@
                 </div>
 
                 {% if profile_url %}
-                  <div class="crud-form-inputs">
-                    <!-- Checkbox to Delete Profile Picture -->
-                    <input type="checkbox" id="deleteProfilePicture"  placeholder="Delete Profile Picture" name="deleteProfilePicture" value="true">
-                    <label for="deleteProfilePicture">Delete Profile Picture</label>
-                  </div>
+                <div class="crud-form-inputs">
+                  <!-- Checkbox to Delete Profile Picture -->
+                  <input type="checkbox" id="deleteProfilePicture"
+                    placeholder="Delete Profile Picture"
+                    name="deleteProfilePicture" value="true">
+                  <label for="deleteProfilePicture">Remove</label>
+                </div>
                 {% endif %}
               </div>
             </div>
           </div>
+
           <div>
             <span>Name</span>
             <div style="
-              display: flex;
-              justify-content: space-between;
-              gap: 1rem;
-            ">
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+          ">
               <div class="crud-form-inputs">
                 {{ form.studentFirstName }}
                 {{ form.studentFirstName.label }}
@@ -102,6 +85,7 @@
               </div>
             </div>
           </div>
+
           <div>
             <span>Student ID</span>
             <div class="crud-form-inputs">
@@ -109,6 +93,7 @@
               {{ form.studentID.label }}
             </div>
           </div>
+
           <div>
             <span>Student Details</span>
             <div class="crud-form-inputs">
@@ -124,57 +109,114 @@
               {{ form.studentCourse.label }}
             </div>
             {% if '/students/edit/' in request.path %}
-            <input type="hidden" name="student_id-edit" id="student_id-edit" value="{{ student_id }}">
+            <input type="hidden" name="student_id-edit" id="student_id-edit"
+              value="{{ student_id }}">
             {% endif %}
           </div>
-        </main>
-      </div>
-    </form>
-    <footer class="form__actions">
-      <button class="delete" onclick="location.href='/students';">Cancel</button>
-      <button class="add disabled" name="confirmEdit" submit-confirmation onclick="confirmationModal(document.getElementById('studentID').value, 'singleEdit')" disabled>Submit
-        <span class="tooltiptext" id="confirm-tooltip">There are no changes...</span>
-      </button>
-    </footer>
-  </main>
+      </main>
+    </div>
+  </form>
+
+  <footer class="form__actions">
+    <button class="delete" onclick="location.href='/students';">Cancel</button>
+    <button class="add disabled" name="confirmEdit" submit-confirmation
+      onclick="confirmationModal(document.getElementById('studentID').value, 'singleEdit')"
+      disabled>Save
+      <span class="tooltiptext" id="confirm-tooltip">There are no
+        changes...</span>
+    </button>
+  </footer>
+
+</main>
+<script>
+  const studentUpload = document.getElementById('studentUpload');
+  const previewImage = document.getElementById('previewImage');
+  const removeBtn = document.getElementById("deleteProfilePicture")
+
+  document.addEventListener('DOMContentLoaded', function () {
+
+    studentUpload.addEventListener('change', function (event) {
+      const file = event.target.files[0];
+
+      if (file) {
+        const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/webp'];
+        if (!allowedTypes.includes(file.type)) {
+          alert('Invalid file type. Please upload a PNG, JPEG, JPG, or WEBP image.');
+          studentUpload.value = ''; // Clear the input
+          previewImage.src = "#"; // Reset image preview
+          previewImage.style.display = 'none'; // Hide preview
+          return;
+        }
+
+        const reader = new FileReader();
+
+        // When the file is read successfully
+        reader.onload = function (e) {
+          previewImage.src = e.target.result;  // Set the image source
+          previewImage.style.display = 'block';  // Display the image
+
+          if (removeBtn.checked == true) { removeBtn.checked = false; }
+        };
+
+        // Read the file as a data URL (base64 string)
+        reader.readAsDataURL(file);
+      } else {
+        previewImage.src = "#";  // Reset image if no file is chosen
+        previewImage.style.display = 'none';  // Hide the image
+      }
+    });
+  });
+
+  removeBtn.addEventListener("click", () => {
+    const imagePreviewer = document.getElementById("previewImage")
+
+    if (removeBtn.checked == true) {
+      imagePreviewer.src = "/static/images/no_profile.jpg";
+      // studentUpload.value = '';
+    }
+    if (removeBtn.checked == false) { imagePreviewer.src = imagePreviewer.getAttribute("data"); }
+  })
+</script>
 {% endblock %}
 
 {% block confirmationModal %}
-  <dialog data-modal-delete class="modal">
-    <main>
-      <p>Are you sure want to proceed with the update?</p>
-      <p style="text-align: center;">student: <span bold chosen-id></span></p>
+<dialog data-modal-delete class="modal">
+  <main>
+    <p>Are you sure want to proceed with the update?</p>
+    <p style="text-align: center;">student: <span bold chosen-id></span></p>
 
-      <div class="modal__actions">
-        <button class="delete" data-close-modal-delete>Cancel</button>
-        <button class="add" value="" delete-confirmation onclick="setSubmitForm()">Confirm</button>
-      </div>
-    </main>
-  </dialog>
+    <div class="modal__actions">
+      <button class="delete" data-close-modal-delete>Cancel</button>
+      <button class="add" value="" delete-confirmation
+        onclick="setSubmitForm()">Confirm</button>
+    </div>
+  </main>
+</dialog>
 {% endblock %}
 
 {% block alertsOverlay %}
-  <div class="alert-container absolute">
-    {% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-        {% for category, message in messages %}
-          <div class="alert alert-{{ category }}" role="alert">
-            <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
-            {% if category == "danger" %}
-              <strong>Danger!</strong>
-            {% elif category == "warning" %}
-              <strong>Warning!</strong>
-            {% elif category == "info" %}
-              <strong>Info!</strong>
-            {% elif category == "success" %}
-              <strong>Success!</strong>
-            {% else %}
-              <strong>%NULL%</strong>
-            {% endif %}
-            {{ message }}
-          </div>
-        {% endfor %}   
-      {% endif %}
-    {% endwith %}
+<div class="alert-container absolute">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+  {% for category, message in messages %}
+  <div class="alert alert-{{ category }}" role="alert">
+    <span class="closebtn"
+      onclick="this.parentElement.style.display='none';">&times;</span>
+    {% if category == "danger" %}
+    <strong>Danger!</strong>
+    {% elif category == "warning" %}
+    <strong>Warning!</strong>
+    {% elif category == "info" %}
+    <strong>Info!</strong>
+    {% elif category == "success" %}
+    <strong>Success!</strong>
+    {% else %}
+    <strong>%NULL%</strong>
+    {% endif %}
+    {{ message }}
   </div>
+  {% endfor %}
+  {% endif %}
+  {% endwith %}
+</div>
 {% endblock %}

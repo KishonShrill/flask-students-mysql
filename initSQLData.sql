@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS `course` (
 	UNIQUE KEY unique_course_code (CourseCode),
   CONSTRAINT `fk_course_college` FOREIGN KEY (`CollegeCode`) REFERENCES `college` (`CollegeCode`) 
 	ON UPDATE CASCADE
-	ON DELETE SET NULL
+	ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
