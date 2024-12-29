@@ -20,7 +20,18 @@
           <button class="delete" hidden="hidden" id="deleteAll" onclick="confirmationModal('MULTIPLE', 'MULTIPLE')">Delete All</button>
           <button class="add action" type="submit" form="createForm">Add</button>
         </div>
-        <p style="display: flex; align-items: center;">{{ searchForm.search }}<button class="search" style="margin-right: 1rem;" onclick="setSearchForm('students')">Search</button> {{ searchForm.studentSelection }} {{ searchForm.searchOption }}</p>
+        <p style="display: flex; align-items: center;">
+          <input id="search" name="search" placeholder="Search..." type="text" value="">
+          <button class="search" style="margin-right: 1rem;" onclick="setSearchForm('students')">Search</button> 
+          <select id="studentSelection" name="studentSelection">
+            {% if choices == 'firstname' %}<option value="firstname" selected>First Name</option>{% else %}<option value="firstname">First Name</option>{% endif %}
+            {% if choices == 'lastname' %}<option value="lastname" selected>Last Name</option>{% else %}<option value="lastname">Last Name</option>{% endif %}
+            {% if choices == 'id' %}<option value="id" selected>School ID</option>{% else %}<option value="id">School ID</option>{% endif %}
+            {% if choices == 'yearlevel' %}<option value="yearlevel" selected>Year</option>{% else %}<option value="yearlevel">Year</option>{% endif %}
+            {% if choices == 'gender' %}<option value="gender" selected>Gender</option>{% else %}<option value="gender">Gender</option>{% endif %}
+          </select>
+          {{ searchForm.searchOption }}
+        </p>
       </div>
     </header>
     <div class="content__table">
@@ -35,7 +46,7 @@
         <p><b>CourseID</b></p>
         <p><b>Actions</b></p>
       </div>
-      <div style="height: 100%; scrollbar-gutter: stable;">
+      <div style="height: 100; scrollbar-gutter: stable;">
         {% if results %}
           {% for student in results %}
             <div class="content__table-data-students">
@@ -62,7 +73,44 @@
         {% endif %}
       </div>
     </div>
+    <div class="content-pagination">
+      <ul class="pagination-container">
+        {% if current_page > 1 %}
+        <li>
+          <a class="pagination-numbers" href="{{ request.path }}?q={{ query }}&course={{ course }}&page={{ current_page - 1 }}">Prev</a>
+        </li>
+        {% endif %}
+    
+        {# Render pagination numbers dynamically #}
+        {% for page in range(1, total_pages + 1) %}
+        <li>
+          <a class="pagination-numbers" href="{{ request.path }}?q={{ query }}&course={{ course }}&page={{ page }}">{{ page }}</a>
+        </li>
+        {% endfor %}
+    
+        {% if current_page < total_pages %}
+        <li>
+          <a class="pagination-numbers" href="{{ request.path }}?q={{ query }}&course={{ course }}&page={{ current_page + 1 }}">Next</a>
+        </li>
+        {% endif %}
+      </ul>
+    </div>
+    
   </main>
+  <script>
+    window.onload = function() {
+      const query = '{{ query }}';
+      const choice = '{{ choices }}';
+      const course = '{{ course }}';
+
+      console.log("Query: "+query)
+      console.log("Choice: "+choice)
+      console.log("Course: "+course)
+
+      if (query != 'None') {document.getElementById("search").value = query}
+      if (course != 'None') {document.getElementById("searchOption").value = course}
+    };
+  </script>
 {% endblock %}
 
 {% block confirmationModal %}

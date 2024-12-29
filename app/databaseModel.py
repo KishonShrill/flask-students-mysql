@@ -200,13 +200,28 @@ class DatabaseManager(object):
     """ LIST METHOD """
     
     @classmethod
-    def allStudents(cls):
+    def allStudents(cls, page):
         cursor = mysql.connection.cursor()
+        
+        offset = 14 * (page - 1)
 
-        sql = "SELECT * from student"
-        cursor.execute(sql)
+        sql = """
+        SELECT * 
+        FROM student
+        LIMIT 14
+        OFFSET %s
+        """
+        cursor.execute(sql, (offset,))
         result = cursor.fetchall()
-        return result
+        
+        sql = """
+        SELECT COUNT(*) AS row_count
+        FROM student
+        """
+        cursor.execute(sql)
+        count = cursor.fetchone()[0]
+        
+        return result, count
     
     @classmethod
     def allCourses(cls):
@@ -232,104 +247,185 @@ class DatabaseManager(object):
     """ WEBSITE THINGS """
 
     @classmethod
-    def queryStudentFirstNameWithCourse(cls, args: str, college: str):
+    def queryStudentFirstNameWithCourse(cls, args: str, college: str, current_page):
         cursor = mysql.connection.cursor()
+        
+        offset = 14 * (current_page - 1)
+        
         cursor.execute("""
-            SELECT *
-            FROM student
-            WHERE student.FirstName LIKE %s AND student.CourseCode = %s
-        """, ('%' + args + '%', college))
+        SELECT *
+        FROM student
+        WHERE student.FirstName LIKE %s AND student.CourseCode = %s
+        LIMIT 14
+        OFFSET %s
+        """, ('%' + args + '%', college, offset))
         result = cursor.fetchall()
-        return result
-    
-    @classmethod
-    def queryStudentLastNameWithCourse(cls, args: str, college: str):
-        cursor = mysql.connection.cursor()
-        cursor.execute("""
-            SELECT *
-            FROM student
-            WHERE student.LastName LIKE %s AND student.CourseCode = %s
-        """, ('%' + args + '%', college))
-        result = cursor.fetchall()
-        return result
-    
-    @classmethod
-    def queryStudentIDWithCourse(cls, args: str, college: str):
-        cursor = mysql.connection.cursor()
-        cursor.execute("""
-            SELECT *
-            FROM student
-            WHERE student.ID LIKE %s AND student.CourseCode = %s
-        """, ('%' + args + '%', college))
-        result = cursor.fetchall()
-        return result
-    
-    @classmethod
-    def queryStudentYearWithCourse(cls, args: str, college: str):
-        cursor = mysql.connection.cursor()
-        cursor.execute("""
-            SELECT *
-            FROM student
-            WHERE student.YearLevel LIKE %s AND student.CourseCode = %s
-        """, ('%' + args + '%', college))
-        result = cursor.fetchall()
-        return result
-    
-    @classmethod
-    def queryStudentGenderWithCourse(cls, args: str, college: str):
-        cursor = mysql.connection.cursor()
-        cursor.execute("""
-            SELECT *
-            FROM student
-            WHERE student.Gender LIKE %s AND student.CourseCode = %s
-        """, ('%' + args + '%', college))
-        result = cursor.fetchall()
-        return result
-    
-    @classmethod
-    def queryStudentFirstName(cls, args: str):
-        cursor = mysql.connection.cursor()
-        cursor.execute("""
-            SELECT *
-            FROM student
-            WHERE student.FirstName LIKE %s
-        """, ('%' + args + '%',))
-        result = cursor.fetchall()
-        return result
-    
-    @classmethod
-    def queryStudentLastName(cls, args: str):
-        cursor = mysql.connection.cursor()
-        cursor.execute("""
-            SELECT *
-            FROM student
-            WHERE student.LastName LIKE %s
-        """, ('%' + args + '%',))
-        result = cursor.fetchall()
-        return result
-    
-    @classmethod
-    # def queryStudentID(cls, args: str):
-    def queryStudentWithID(cls, args: str):
-        cursor = mysql.connection.cursor()
-        query = """
-            SELECT *
-            FROM student
-            WHERE student.ID LIKE %s
+        
+        sql = """
+        SELECT COUNT(*) AS row_count
+        FROM student
+        WHERE student.FirstName LIKE %s AND student.CourseCode = %s
         """
-        values = ('%' + args + '%',)
+        cursor.execute(sql, ('%' + args + '%', college))
+        count = cursor.fetchone()[0]
+        return result, count
+    
+    @classmethod
+    def queryStudentLastNameWithCourse(cls, args: str, college: str, current_page):
+        cursor = mysql.connection.cursor()
+        offset = 14 * (current_page - 1)
+        cursor.execute("""
+        SELECT *
+        FROM student
+        WHERE student.LastName LIKE %s AND student.CourseCode = %s
+        LIMIT 14
+        OFFSET %s
+        """, ('%' + args + '%', college, offset))
+        result = cursor.fetchall()
+        sql = """
+        SELECT COUNT(*) AS row_count
+        FROM student
+        WHERE student.LastName LIKE %s AND student.CourseCode = %s
+        """
+        cursor.execute(sql, ('%' + args + '%', college))
+        count = cursor.fetchone()[0]
+        return result, count
+    
+    @classmethod
+    def queryStudentIDWithCourse(cls, args: str, college: str, current_page):
+        cursor = mysql.connection.cursor()
+        offset = 14 * (current_page - 1)
+        cursor.execute("""
+        SELECT *
+        FROM student
+        WHERE student.ID LIKE %s AND student.CourseCode = %s
+        LIMIT 14
+        OFFSET %s
+        """, ('%' + args + '%', college, offset))
+        result = cursor.fetchall()
+        sql = """
+        SELECT COUNT(*) AS row_count
+        FROM student
+        WHERE student.ID LIKE %s AND student.CourseCode = %s
+        """
+        cursor.execute(sql, ('%' + args + '%', college))
+        count = cursor.fetchone()[0]
+        return result, count
+    
+    @classmethod
+    def queryStudentYearWithCourse(cls, args: str, college: str, current_page):
+        cursor = mysql.connection.cursor()
+        offset = 14 * (current_page - 1)
+        cursor.execute("""
+        SELECT *
+        FROM student
+        WHERE student.YearLevel LIKE %s AND student.CourseCode = %s
+        LIMIT 14
+        OFFSET %s
+        """, ('%' + args + '%', college, offset))
+        result = cursor.fetchall()
+        sql = """
+        SELECT COUNT(*) AS row_count
+        FROM student
+        WHERE student.YearLevel LIKE %s AND student.CourseCode = %s
+        """
+        cursor.execute(sql, ('%' + args + '%', college))
+        count = cursor.fetchone()[0]
+        return result, count
+    
+    @classmethod
+    def queryStudentGenderWithCourse(cls, args: str, college: str, current_page):
+        cursor = mysql.connection.cursor()
+        offset = 14 * (current_page - 1)
+        cursor.execute("""
+        SELECT *
+        FROM student
+        WHERE student.Gender LIKE %s AND student.CourseCode = %s
+        LIMIT 14
+        OFFSET %s
+        """, ('%' + args + '%', college, offset))
+        result = cursor.fetchall()
+        sql = """
+        SELECT COUNT(*) AS row_count
+        FROM student
+        WHERE student.Gender LIKE %s AND student.CourseCode = %s
+        """
+        cursor.execute(sql, ('%' + args + '%', college))
+        count = cursor.fetchone()[0]
+        return result, count
+    
+    @classmethod
+    def queryStudentFirstName(cls, args: str, current_page):
+        cursor = mysql.connection.cursor()
+        offset = 14 * (current_page - 1)
+        cursor.execute("""
+        SELECT *
+        FROM student
+        WHERE student.FirstName LIKE %s
+        LIMIT 14
+        OFFSET %s
+        """, ('%' + args + '%', offset))
+        result = cursor.fetchall()
+        sql = """
+        SELECT COUNT(*) AS row_count
+        FROM student
+        WHERE student.FirstName LIKE %s
+        """
+        cursor.execute(sql, ('%' + args + '%',))
+        count = cursor.fetchone()[0]
+        return result, count
+    
+    @classmethod
+    def queryStudentLastName(cls, args: str,current_page):
+        cursor = mysql.connection.cursor()
+        offset = 14 * (current_page - 1)
+        cursor.execute("""
+        SELECT *
+        FROM student
+        WHERE student.LastName LIKE %s
+        LIMIT 14
+        OFFSET %s
+        """, ('%' + args + '%', offset))
+        result = cursor.fetchall()
+        sql = """
+        SELECT COUNT(*) AS row_count
+        FROM student
+        WHERE student.LastName LIKE %s
+        """
+        cursor.execute(sql, ('%' + args + '%',))
+        count = cursor.fetchone()[0]
+        return result, count
+    
+    @classmethod
+    def queryStudentWithID(cls, args: str, current_page):
+        cursor = mysql.connection.cursor()
+        offset = 14 * (current_page - 1)
+        query = """
+        SELECT *
+        FROM student
+        WHERE student.ID LIKE %s
+        LIMIT 14
+        OFFSET %s
+        """
+        values = ('%' + args + '%', offset)
         cursor.execute(query, values)
         result = cursor.fetchall()
-        return result
+        sql = """
+        SELECT COUNT(*) AS row_count
+        FROM student
+        WHERE student.ID LIKE %s
+        """
+        cursor.execute(sql, ('%' + args + '%',))
+        count = cursor.fetchone()[0]
+        return result, count
     
     @classmethod
-    # def queryStudentID(cls, args: str):
     def queryStudentCloudinaryURL(cls, args: str):
         cursor = mysql.connection.cursor()
         query = """
-            SELECT profile_url
-            FROM student
-            WHERE student.ID LIKE %s
+        SELECT profile_url
+        FROM student
+        WHERE student.ID LIKE %s
         """
         values = ('%' + args + '%',)
         cursor.execute(query, values)
@@ -337,37 +433,67 @@ class DatabaseManager(object):
         return result
     
     @classmethod
-    def queryStudentYear(cls, args: str):
+    def queryStudentYear(cls, args: str,current_page):
         cursor = mysql.connection.cursor()
+        offset = 14 * (current_page - 1)
         cursor.execute("""
-            SELECT *
-            FROM student
-            WHERE student.YearLevel LIKE %s
-        """, ('%' + args + '%',))
+        SELECT *
+        FROM student
+        WHERE student.YearLevel LIKE %s
+        LIMIT 14
+        OFFSET %s
+        """, ('%' + args + '%', offset))
         result = cursor.fetchall()
-        return result
+        sql = """
+        SELECT COUNT(*) AS row_count
+        FROM student
+        WHERE student.YearLevel LIKE %s
+        """
+        cursor.execute(sql, ('%' + args + '%',))
+        count = cursor.fetchone()[0]
+        return result, count
     
     @classmethod
-    def queryStudentGender(cls, args: str):
+    def queryStudentGender(cls, args: str, current_page):
         cursor = mysql.connection.cursor()
+        offset = 14 * (current_page - 1)
         cursor.execute("""
-            SELECT *
-            FROM student
-            WHERE student.Gender LIKE %s
-        """, ('%' + args + '%',))
+        SELECT *
+        FROM student
+        WHERE student.Gender LIKE %s
+        LIMIT 14
+        OFFSET %s
+        """, ('%' + args + '%', offset))
         result = cursor.fetchall()
-        return result
+        sql = """
+        SELECT COUNT(*) AS row_count
+        FROM student
+        WHERE student.Gender LIKE %s
+        """
+        cursor.execute(sql, ('%' + args + '%',))
+        count = cursor.fetchone()[0]
+        return result, count
     
     @classmethod
-    def queryStudentWithCourse(cls, args: str):
+    def queryStudentWithCourse(cls, args: str, current_page):
         cursor = mysql.connection.cursor()
+        offset = 14 * (current_page - 1)
         cursor.execute("""
-            SELECT *
-            FROM student
-            WHERE student.coursecode like %s
-        """, (args,))
+        SELECT *
+        FROM student
+        WHERE student.coursecode like %s
+        LIMIT 14
+        OFFSET %s
+        """, (args, offset))
         result = cursor.fetchall()
-        return result
+        sql = """
+        SELECT COUNT(*) AS row_count
+        FROM student
+        WHERE student.coursecode like %s
+        """
+        cursor.execute(sql, ('%' + args + '%',))
+        count = cursor.fetchone()[0]
+        return result, count
     
     @classmethod
     def queryCourseWithNoCollege(cls, args: str):
@@ -436,43 +562,62 @@ class DatabaseManager(object):
         return result
     
     @classmethod
-    def sortBy(cls, args: str):
+    def sortBy(cls, args: str, current_page):
         cursor = mysql.connection.cursor()
+        
+        offset = 14 * (current_page - 1)
+        
+        sql = """
+        SELECT COUNT(*) AS row_count
+        FROM student
+        """
+        cursor.execute(sql)
+        count = cursor.fetchone()[0]
 
         if args == "firstname":
             query = """
-                SELECT *
-                FROM student
-                ORDER BY firstname;
+            SELECT *
+            FROM student
+            ORDER BY firstname
+            LIMIT 14
+            OFFSET %s;
             """
         elif args == "lastname":
             query = """
-                SELECT *
-                FROM student
-                ORDER BY lastname;
+            SELECT *
+            FROM student
+            ORDER BY lastname
+            LIMIT 14
+            OFFSET %s;
             """
         elif args == "id":
             query = """
-                SELECT *
-                FROM student
-                ORDER BY id;
+            SELECT *
+            FROM student
+            ORDER BY id
+            LIMIT 14
+            OFFSET %s;
             """
         elif args == "yearlevel":
             query = """
-                SELECT *
-                FROM student
-                ORDER BY yearlevel;
+            SELECT *
+            FROM student
+            ORDER BY yearlevel
+            LIMIT 14
+            OFFSET %s;
             """
         else:
             query = """
-                SELECT *
-                FROM student
-                ORDER BY gender;
+            SELECT *
+            FROM student
+            ORDER BY gender
+            LIMIT 14
+            OFFSET %s;
             """
 
-        cursor.execute(query)
+        cursor.execute(query, (offset,))
         result = cursor.fetchall()
-        return result
+        return result, count
     
     @classmethod
     def countStudents(cls):

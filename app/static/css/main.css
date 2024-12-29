@@ -80,7 +80,7 @@ main {
   align-items: center;
 }
 .content__table {
-  height: calc(100vh - 5rem - 1rem - 1rem);
+  height: calc(100vh - 5rem - 1rem - 5.25rem);
   display: flex;
   flex-direction: column;
   border: 1px solid grey;
@@ -155,4 +155,28 @@ main {
   margin-top: 0.875rem;
   display: flex;
   flex-direction: column;
+}
+
+/* Pagination */
+/* Pagination */
+/* Pagination */
+.pagination-container {
+  width: 100%;
+  /* margin-top: 2rem; */
+  list-style-type: none;
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.pagination-numbers {
+  width: 2.5rem;
+  height: 2.5rem;
+  display: grid;
+  place-items: center;
+  text-decoration: none;
+  color: black;
+  background-color: white;
+  border: 1px solid #DFDFDF;
+  border-radius: 4px;
 }

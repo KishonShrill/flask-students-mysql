@@ -4,6 +4,7 @@ import app.databaseModel as databaseModel
 import re as regex
 from app.forms import *
 import os
+import math
 
 import cloudinary.api
 import cloudinary.uploader
@@ -16,11 +17,18 @@ from werkzeug.utils import secure_filename
 def index():
     searchForm = SearchForm()
     studentForm = StudentForm()
+    
+    # PAGINATION
     courses = databaseModel.DatabaseManager.allCourses()
-    students = databaseModel.DatabaseManager.allStudents()
+    items_per_page = 14
+    current_page  = int(request.args.get('page', 1))
+    students, total_items = databaseModel.DatabaseManager.allStudents(current_page)
+    total_pages = math.ceil(total_items / items_per_page)
+    # PAGINATION
+    
     searchForm.searchOption.choices = [('', 'Select a Course:')] + [(course[1], course[0]) for course in courses]
     studentForm.studentCourse.choices = [(course[1], course[0]) for course in courses]
-    return render_template('students.html', results=students, searchForm=searchForm, studentForm=studentForm)
+    return render_template('students.html', results=students, searchForm=searchForm, studentForm=studentForm, total_pages=total_pages, current_page=current_page)
 
 @student_bp.route('/students/search/sort=<choices>', methods=['POST','GET'])
 def search(choices):
@@ -28,9 +36,12 @@ def search(choices):
     studentForm = StudentForm()
     courses = databaseModel.DatabaseManager.allCourses()
     
+    items_per_page = 14
     choices = choices or request.args.get('sort')
     query = request.form.get('search') or request.args.get('q')
     course = request.form.get('searchOption') or request.args.get('course')
+    current_page  = int(request.args.get('page', 1))
+    global total_items, total_pages
     print(f"Choices: {choices} and Course: {course} and Query: {query}")
 
     searchForm.searchOption.choices = [('', 'Select a Course:')] + [(course[1], course[0]) for course in courses]
@@ -43,15 +54,20 @@ def search(choices):
             print("Have query and Course")
             match choices:
                 case "firstname":
-                    results = databaseModel.DatabaseManager.queryStudentFirstNameWithCourse(query,course)
+                    results, total_items = databaseModel.DatabaseManager.queryStudentFirstNameWithCourse(query,course,current_page)
+                    total_pages = math.ceil(total_items / items_per_page)
                 case "lastname":
-                    results = databaseModel.DatabaseManager.queryStudentLastNameWithCourse(query,course)
+                    results, total_items = databaseModel.DatabaseManager.queryStudentLastNameWithCourse(query,course,current_page)
+                    total_pages = math.ceil(total_items / items_per_page)
                 case "id":
-                    results = databaseModel.DatabaseManager.queryStudentIDWithCourse(query,course)
+                    results, total_items = databaseModel.DatabaseManager.queryStudentIDWithCourse(query,course,current_page)
+                    total_pages = math.ceil(total_items / items_per_page)
                 case "yearlevel":
-                    results = databaseModel.DatabaseManager.queryStudentYearWithCourse(query,course)
+                    results, total_items = databaseModel.DatabaseManager.queryStudentYearWithCourse(query,course,current_page)
+                    total_pages = math.ceil(total_items / items_per_page)
                 case "gender":
-                    results = databaseModel.DatabaseManager.queryStudentGenderWithCourse(query,course)
+                    results, total_items = databaseModel.DatabaseManager.queryStudentGenderWithCourse(query,course,current_page)
+                    total_pages = math.ceil(total_items / items_per_page)
                 case _:
                     return redirect(url_for("student.index"))
                 
@@ -59,30 +75,44 @@ def search(choices):
             print("Have query but no course")
             match choices:
                 case "firstname":
-                    results = databaseModel.DatabaseManager.queryStudentFirstName(query)
+                    results, total_items = databaseModel.DatabaseManager.queryStudentFirstName(query, current_page)
+                    total_pages = math.ceil(total_items / items_per_page)
                 case "lastname":
-                    results = databaseModel.DatabaseManager.queryStudentLastName(query)
+                    results, total_items = databaseModel.DatabaseManager.queryStudentLastName(query, current_page)
+                    total_pages = math.ceil(total_items / items_per_page)
                 case "id":
-                    results = databaseModel.DatabaseManager.queryStudentWithID(query)
+                    results, total_items = databaseModel.DatabaseManager.queryStudentWithID(query, current_page)
+                    total_pages = math.ceil(total_items / items_per_page)
                 case "yearlevel":
-                    results = databaseModel.DatabaseManager.queryStudentYear(query)
+                    results, total_items = databaseModel.DatabaseManager.queryStudentYear(query, current_page)
+                    total_pages = math.ceil(total_items / items_per_page)
                 case "gender":
-                    results = databaseModel.DatabaseManager.queryStudentGender(query)
+                    results, total_items = databaseModel.DatabaseManager.queryStudentGender(query, current_page)
+                    total_pages = math.ceil(total_items / items_per_page)
                 case _:
                     return redirect(url_for("student.index"))
 
         print(results)
         print("Final Output")
-        return render_template("students.html", results=results, query=query, searchForm=searchForm, studentForm=studentForm)
+        return render_template("students.html", 
+                               results=results, 
+                               query=query, 
+                               searchForm=searchForm, 
+                               studentForm=studentForm, 
+                               total_pages=total_pages, 
+                               current_page=current_page,
+                               choices=choices, course=course
+                               )
     else:
         if course:
-            flash(f"Searching by {course}", "info")
-            results = databaseModel.DatabaseManager.queryStudentWithCourse(course)
-            return render_template("students.html", results=results, query=query, searchForm=searchForm, studentForm=studentForm)
+            results, total_items = databaseModel.DatabaseManager.queryStudentWithCourse(course, current_page)
+            total_pages = math.ceil(total_items / items_per_page)
+            return render_template("students.html", results=results, query=query, searchForm=searchForm, studentForm=studentForm, total_pages=total_pages, current_page=current_page, choices=choices, course=course)
         
         elif choices:
-            results = databaseModel.DatabaseManager.sortBy(choices)
-            return render_template("students.html", results=results, query=query, searchForm=searchForm, studentForm=studentForm)
+            results, total_items = databaseModel.DatabaseManager.sortBy(choices, current_page)
+            total_pages = math.ceil(total_items / items_per_page)
+            return render_template("students.html", results=results, query=query, searchForm=searchForm, studentForm=studentForm, total_pages=total_pages, current_page=current_page, choices=choices, course=course)
         else:
             return redirect(url_for("student.index"))
 
@@ -173,7 +203,7 @@ def createSubmit():
 @student_bp.route('/students/edit/id=<student_id>', methods=['POST','GET'])
 def edit(student_id):
     student_id = student_id or request.args.get('id')
-    student = databaseModel.DatabaseManager.queryStudentWithID(student_id)
+    student, _ = databaseModel.DatabaseManager.queryStudentWithID(student_id)
 
     print(f"student: {student}")
 
