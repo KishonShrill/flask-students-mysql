@@ -198,6 +198,20 @@ class DatabaseManager(object):
     """ LIST METHOD """
     """ LIST METHOD """
     """ LIST METHOD """
+    @staticmethod
+    def fetchImage(student_id):
+        try:
+            cursor = mysql.connection.cursor()
+            query = """
+            SELECT profile_url
+            FROM student
+            WHERE ID = %s
+            """
+            cursor.execute(query, (student_id,))
+            result = cursor.fetchone()[0]
+            return result
+        except Exception as e:
+            print(f"Fetch Image ERR: {e}")
     
     @classmethod
     def allStudents(cls, page):

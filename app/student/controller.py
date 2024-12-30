@@ -1,4 +1,4 @@
-from flask import render_template, redirect, request, flash, url_for
+from flask import render_template, redirect, request, flash, url_for, jsonify
 from . import student_bp
 import app.databaseModel as databaseModel
 import re as regex
@@ -203,7 +203,8 @@ def createSubmit():
 @student_bp.route('/students/edit/id=<student_id>', methods=['POST','GET'])
 def edit(student_id):
     student_id = student_id or request.args.get('id')
-    student, _ = databaseModel.DatabaseManager.queryStudentWithID(student_id)
+    current_page  = int(request.args.get('page', 1))
+    student, _ = databaseModel.DatabaseManager.queryStudentWithID(student_id, current_page)
 
     print(f"student: {student}")
 
@@ -351,6 +352,20 @@ def delete():
     if request.method == "POST":
         delete_item = request.form.get('delete-chosen_id')
         print(f"Student to delete: {delete_item}")
+        
+        global old_public_id
+        profile_picture = databaseModel.DatabaseManager.fetchImage(delete_item)
+        
+        if profile_picture:
+            # Extract the public_id from the URL and delete the image
+            old_public_id = profile_picture.split('/')[-1]  # Get the filename
+            old_public_id = '.'.join(old_public_id.split('.')[:-1])  # Remove the last extension
+            try:
+                cloudinary.api.delete_resources(old_public_id, resource_type="image", type="upload")
+            except Exception as delete_error:
+                print(f"Error deleting old image: {str(delete_error)}")
+                flash("An error occurred while trying to delete the profile picture.", "danger")
+
 
         databaseModel.DatabaseManager.deleteStudent(delete_item)
 
@@ -368,6 +383,19 @@ def delete_checked():
     
         for student_id in checked_items:
             try:
+                global old_public_id
+                profile_picture = databaseModel.DatabaseManager.fetchImage(student_id)
+                
+                if profile_picture:
+                    # Extract the public_id from the URL and delete the image
+                    old_public_id = profile_picture.split('/')[-1]  # Get the filename
+                    old_public_id = '.'.join(old_public_id.split('.')[:-1])  # Remove the last extension
+                    try:
+                        cloudinary.api.delete_resources(old_public_id, resource_type="image", type="upload")
+                    except Exception as delete_error:
+                        print(f"Error deleting old image: {str(delete_error)}")
+                        flash("An error occurred while trying to delete the profile picture.", "danger")
+                
                 databaseModel.DatabaseManager.deleteStudent(student_id)
             except Exception as e:
                 flash(f"Failed to delete student with ID: {student_id}", "danger")
