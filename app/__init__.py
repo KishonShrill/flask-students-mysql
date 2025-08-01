@@ -16,10 +16,11 @@ def create_app(test_config=None):
         MYSQL_DB=DB_NAME,
         MYSQL_HOST=DB_HOST,
         #BOOTSTRAP_SERVE_LOCAL=BOOTSTRAP_SERVE_LOCAL
+        MYSQL_UNIX_SOCKET='/opt/lampp/var/mysql/mysql.sock'
     )
 
     # Set the max upload size to 25MB (in bytes)
-    app.config['MAX_CONTENT_LENGTH'] = 25 * 1024 * 1024  # 25MB
+    #! app.config['MAX_CONTENT_LENGTH'] = 25 * 1024 * 1024  # 25MB
 
     cloudinary.config(
         cloud_name=CLOUD_NAME,

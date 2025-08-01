@@ -23,14 +23,15 @@
         <p style="display: flex; align-items: center;">
           <input id="search" name="search" placeholder="Search..." type="text" value="">
           <button class="search" style="margin-right: 1rem;" onclick="setSearchForm('students')">Search</button> 
-          <select id="studentSelection" name="studentSelection">
+          <select id="studentSelection" name="studentSelection" onchange="setSearchForm('students')">
             {% if choices == 'firstname' %}<option value="firstname" selected>First Name</option>{% else %}<option value="firstname">First Name</option>{% endif %}
             {% if choices == 'lastname' %}<option value="lastname" selected>Last Name</option>{% else %}<option value="lastname">Last Name</option>{% endif %}
             {% if choices == 'id' %}<option value="id" selected>School ID</option>{% else %}<option value="id">School ID</option>{% endif %}
             {% if choices == 'yearlevel' %}<option value="yearlevel" selected>Year</option>{% else %}<option value="yearlevel">Year</option>{% endif %}
             {% if choices == 'gender' %}<option value="gender" selected>Gender</option>{% else %}<option value="gender">Gender</option>{% endif %}
+            {% if choices == 'course' %}<option value="course" selected>Course</option>{% else %}<option value="course">Course</option>{% endif %}
           </select>
-          {{ searchForm.searchOption }}
+          {{ searchForm.searchOption(onchange="setSearchForm('students')") }}
         </p>
       </div>
     </header>
@@ -57,7 +58,7 @@
               <p>{{ student[2] }}</p>
               <p>{{ student[3] }}</p>
               <p><span class="highlight highlight-{{ student[4] }}">{{ student[4] }}</span></p>
-              <p><span class="highlight highlight-{{ student[5] }}">{{ student[5] }}</span></p>
+              <p style="display: flex; align-items: center; gap: 0.5rem;"><span class="highlight highlight-{{ student[5] }}">{{ student[5] }}</span><span class="highlight highlight-{{ student[7] }}">({{ student[7] }})</span></p>
 
               <div class="actions-div">
                 <button class="edit action" id="student_id-edit" onclick="setEditForm('{{ student[2] }}', 'students')"><img class="icon" src="{{ url_for('static', filename='images/pencil-edit-01-stroke-rounded.svg')}}" alt="Edit"></button>
@@ -123,6 +124,12 @@
 
       if (query != 'None') {document.getElementById("search").value = query}
       if (course != 'None') {document.getElementById("searchOption").value = course}
+
+      document.getElementById("search").addEventListener("keydown", function(e) {
+        if (e.key === "Enter") {
+          setSearchForm('students')
+        }
+      });
     };
   </script>
 {% endblock %}

@@ -22,18 +22,28 @@ class DatabaseManager(object):
             cursor = mysql.connection.cursor()
 
             # If newCourse is None, set it to NULL in the query
-            if newCourse == "None":
-                query = """
-                    INSERT INTO student(firstname, lastname, id, yearlevel, gender, coursecode, profile_url) VALUE
-                    (%s, %s, %s, %s, %s, NULL, %s);
-                """
-                values = (newFirstName, newLastName, newID, newYear, newGender, profilePicture)
-            else:
+            if newCourse != "None" and profilePicture != "None":
                 query = """
                     INSERT INTO student(firstname, lastname, id, yearlevel, gender, coursecode, profile_url) VALUE
                     (%s, %s, %s, %s, %s, %s, %s);
                 """
                 values = (newFirstName, newLastName, newID, newYear, newGender, newCourse, profilePicture)
+            elif newCourse == "None" and profilePicture != "None":
+                query = """
+                    INSERT INTO student(firstname, lastname, id, yearlevel, gender, coursecode, profile_url) VALUE
+                    (%s, %s, %s, %s, %s, NULL, %s);
+                """
+                values = (newFirstName, newLastName, newID, newYear, newGender, profilePicture)
+            elif newCourse != "None" and profilePicture == "None":
+                query = """
+                    INSERT INTO student(firstname, lastname, id, yearlevel, gender, coursecode, profile_url) VALUE
+                    (%s, %s, %s, %s, %s, %s, NULL);
+                """
+            else:
+                query = """
+                    INSERT INTO student(firstname, lastname, id, yearlevel, gender, coursecode, profile_url) VALUE
+                    (%s, %s, %s, %s, %s, Null, Null);
+                """
 
             cursor.execute(query, values)
             mysql.connection.commit()
@@ -84,7 +94,14 @@ class DatabaseManager(object):
             cursor = mysql.connection.cursor()
 
             # If newCourse is None, set it to NULL in the query
-            if newCourse == "None":
+            if newCourse != "None" and profile_url != "None":
+                query = """
+                    UPDATE student 
+                    SET FirstName = %s, LastName = %s, ID = %s, YearLevel = %s, Gender = %s, CourseCode = %s, profile_url = %s
+                    WHERE ID = %s
+                """
+                values = (newFirstName, newLastName, newID, newYear, newGender, newCourse, profile_url, oldID)
+            if newCourse == "None" and profile_url != "None":
                 query = """
                     UPDATE student 
                     SET FirstName = %s, LastName = %s, ID = %s, YearLevel = %s, Gender = %s, CourseCode = NULL, profile_url = %s
@@ -92,7 +109,7 @@ class DatabaseManager(object):
                 """
                 values = (newFirstName, newLastName, newID, newYear, newGender, profile_url, oldID)
             # If newCourse is None, set it to NULL in the query
-            elif profile_url == "None":
+            elif newCourse != "None" and profile_url == "None":
                 query = """
                     UPDATE student 
                     SET FirstName = %s, LastName = %s, ID = %s, YearLevel = %s, Gender = %s, CourseCode = %s, profile_url = NULL
@@ -102,10 +119,10 @@ class DatabaseManager(object):
             else:
                 query = """
                     UPDATE student 
-                    SET FirstName = %s, LastName = %s, ID = %s, YearLevel = %s, Gender = %s, CourseCode = %s, profile_url = %s
+                    SET FirstName = %s, LastName = %s, ID = %s, YearLevel = %s, Gender = %s, CourseCode = NULL, profile_url = NULL
                     WHERE ID = %s
                 """
-                values = (newFirstName, newLastName, newID, newYear, newGender, newCourse, profile_url, oldID)
+                values = (newFirstName, newLastName, newID, newYear, newGender, oldID)
 
             cursor.execute(query, values)
             mysql.connection.commit()
@@ -220,8 +237,18 @@ class DatabaseManager(object):
         offset = 14 * (page - 1)
 
         sql = """
-        SELECT * 
+        SELECT 
+            student.FirstName, 
+            student.LastName, 
+            student.ID, 
+            student.YearLevel, 
+            student.Gender, 
+            student.CourseCode, 
+            student.profile_url, 
+            college.CollegeName
         FROM student
+        LEFT JOIN course on student.CourseCode=course.CourseCode
+        LEFT JOIN college on course.CollegeCode=college.CollegeCode
         LIMIT 14
         OFFSET %s
         """
@@ -267,8 +294,18 @@ class DatabaseManager(object):
         offset = 14 * (current_page - 1)
         
         cursor.execute("""
-        SELECT *
+        SELECT 
+            student.FirstName, 
+            student.LastName, 
+            student.ID, 
+            student.YearLevel, 
+            student.Gender, 
+            student.CourseCode, 
+            student.profile_url, 
+            college.CollegeName
         FROM student
+        LEFT JOIN course on student.CourseCode=course.CourseCode
+        LEFT JOIN college on course.CollegeCode=college.CollegeCode
         WHERE student.FirstName LIKE %s AND student.CourseCode = %s
         LIMIT 14
         OFFSET %s
@@ -289,8 +326,18 @@ class DatabaseManager(object):
         cursor = mysql.connection.cursor()
         offset = 14 * (current_page - 1)
         cursor.execute("""
-        SELECT *
+        SELECT 
+            student.FirstName, 
+            student.LastName, 
+            student.ID, 
+            student.YearLevel, 
+            student.Gender, 
+            student.CourseCode, 
+            student.profile_url, 
+            college.CollegeName
         FROM student
+        LEFT JOIN course on student.CourseCode=course.CourseCode
+        LEFT JOIN college on course.CollegeCode=college.CollegeCode
         WHERE student.LastName LIKE %s AND student.CourseCode = %s
         LIMIT 14
         OFFSET %s
@@ -310,8 +357,18 @@ class DatabaseManager(object):
         cursor = mysql.connection.cursor()
         offset = 14 * (current_page - 1)
         cursor.execute("""
-        SELECT *
+        SELECT 
+            student.FirstName, 
+            student.LastName, 
+            student.ID, 
+            student.YearLevel, 
+            student.Gender, 
+            student.CourseCode, 
+            student.profile_url, 
+            college.CollegeName
         FROM student
+        LEFT JOIN course on student.CourseCode=course.CourseCode
+        LEFT JOIN college on course.CollegeCode=college.CollegeCode
         WHERE student.ID LIKE %s AND student.CourseCode = %s
         LIMIT 14
         OFFSET %s
@@ -331,8 +388,18 @@ class DatabaseManager(object):
         cursor = mysql.connection.cursor()
         offset = 14 * (current_page - 1)
         cursor.execute("""
-        SELECT *
+        SELECT 
+            student.FirstName, 
+            student.LastName, 
+            student.ID, 
+            student.YearLevel, 
+            student.Gender, 
+            student.CourseCode, 
+            student.profile_url, 
+            college.CollegeName
         FROM student
+        LEFT JOIN course on student.CourseCode=course.CourseCode
+        LEFT JOIN college on course.CollegeCode=college.CollegeCode
         WHERE student.YearLevel LIKE %s AND student.CourseCode = %s
         LIMIT 14
         OFFSET %s
@@ -352,8 +419,18 @@ class DatabaseManager(object):
         cursor = mysql.connection.cursor()
         offset = 14 * (current_page - 1)
         cursor.execute("""
-        SELECT *
+        SELECT 
+            student.FirstName, 
+            student.LastName, 
+            student.ID, 
+            student.YearLevel, 
+            student.Gender, 
+            student.CourseCode, 
+            student.profile_url, 
+            college.CollegeName
         FROM student
+        LEFT JOIN course on student.CourseCode=course.CourseCode
+        LEFT JOIN college on course.CollegeCode=college.CollegeCode
         WHERE student.Gender LIKE %s AND student.CourseCode = %s
         LIMIT 14
         OFFSET %s
@@ -369,12 +446,55 @@ class DatabaseManager(object):
         return result, count
     
     @classmethod
+    def queryStudentCourseWithCourse(cls, args: str, college: str, current_page):
+        cursor = mysql.connection.cursor()
+        offset = 14 * (current_page - 1)
+        cursor.execute("""
+        SELECT 
+            student.FirstName, 
+            student.LastName, 
+            student.ID, 
+            student.YearLevel, 
+            student.Gender, 
+            student.CourseCode, 
+            student.profile_url, 
+            college.CollegeName
+        FROM student
+        LEFT JOIN course on student.CourseCode=course.CourseCode
+        LEFT JOIN college on course.CollegeCode=college.CollegeCode
+        WHERE student.CourseCode LIKE %s AND student.CourseCode = %s OR college.CollegeName = %s
+        LIMIT 14
+        OFFSET %s
+        """, ('%' + args + '%', college,'%' + args + '%', offset))
+        result = cursor.fetchall()
+        sql = """
+        SELECT COUNT(*) AS row_count
+        FROM student
+        LEFT JOIN course on student.CourseCode=course.CourseCode
+        LEFT JOIN college on course.CollegeCode=college.CollegeCode
+        WHERE student.CourseCode LIKE %s AND student.CourseCode = %s OR college.CollegeName = %s
+        """
+        cursor.execute(sql, ('%' + args + '%', college, '%' + args + '%',))
+        count = cursor.fetchone()[0]
+        return result, count
+    
+    @classmethod
     def queryStudentFirstName(cls, args: str, current_page):
         cursor = mysql.connection.cursor()
         offset = 14 * (current_page - 1)
         cursor.execute("""
-        SELECT *
+        SELECT 
+            student.FirstName, 
+            student.LastName, 
+            student.ID, 
+            student.YearLevel, 
+            student.Gender, 
+            student.CourseCode, 
+            student.profile_url, 
+            college.CollegeName
         FROM student
+        LEFT JOIN course on student.CourseCode=course.CourseCode
+        LEFT JOIN college on course.CollegeCode=college.CollegeCode
         WHERE student.FirstName LIKE %s
         LIMIT 14
         OFFSET %s
@@ -394,8 +514,18 @@ class DatabaseManager(object):
         cursor = mysql.connection.cursor()
         offset = 14 * (current_page - 1)
         cursor.execute("""
-        SELECT *
+        SELECT 
+            student.FirstName, 
+            student.LastName, 
+            student.ID, 
+            student.YearLevel, 
+            student.Gender, 
+            student.CourseCode, 
+            student.profile_url, 
+            college.CollegeName
         FROM student
+        LEFT JOIN course on student.CourseCode=course.CourseCode
+        LEFT JOIN college on course.CollegeCode=college.CollegeCode
         WHERE student.LastName LIKE %s
         LIMIT 14
         OFFSET %s
@@ -415,8 +545,18 @@ class DatabaseManager(object):
         cursor = mysql.connection.cursor()
         offset = 14 * (current_page - 1)
         query = """
-        SELECT *
+        SELECT 
+            student.FirstName, 
+            student.LastName, 
+            student.ID, 
+            student.YearLevel, 
+            student.Gender, 
+            student.CourseCode, 
+            student.profile_url, 
+            college.CollegeName
         FROM student
+        LEFT JOIN course on student.CourseCode=course.CourseCode
+        LEFT JOIN college on course.CollegeCode=college.CollegeCode
         WHERE student.ID LIKE %s
         LIMIT 14
         OFFSET %s
@@ -451,8 +591,18 @@ class DatabaseManager(object):
         cursor = mysql.connection.cursor()
         offset = 14 * (current_page - 1)
         cursor.execute("""
-        SELECT *
+        SELECT 
+            student.FirstName, 
+            student.LastName, 
+            student.ID, 
+            student.YearLevel, 
+            student.Gender, 
+            student.CourseCode, 
+            student.profile_url, 
+            college.CollegeName
         FROM student
+        LEFT JOIN course on student.CourseCode=course.CourseCode
+        LEFT JOIN college on course.CollegeCode=college.CollegeCode
         WHERE student.YearLevel LIKE %s
         LIMIT 14
         OFFSET %s
@@ -472,8 +622,18 @@ class DatabaseManager(object):
         cursor = mysql.connection.cursor()
         offset = 14 * (current_page - 1)
         cursor.execute("""
-        SELECT *
+        SELECT 
+            student.FirstName, 
+            student.LastName, 
+            student.ID, 
+            student.YearLevel, 
+            student.Gender, 
+            student.CourseCode, 
+            student.profile_url, 
+            college.CollegeName
         FROM student
+        LEFT JOIN course on student.CourseCode=course.CourseCode
+        LEFT JOIN college on course.CollegeCode=college.CollegeCode
         WHERE student.Gender LIKE %s
         LIMIT 14
         OFFSET %s
@@ -489,23 +649,68 @@ class DatabaseManager(object):
         return result, count
     
     @classmethod
-    def queryStudentWithCourse(cls, args: str, current_page):
+    def queryStudentCourse(cls, args: str, current_page):
         cursor = mysql.connection.cursor()
         offset = 14 * (current_page - 1)
         cursor.execute("""
-        SELECT *
+        SELECT 
+            student.FirstName, 
+            student.LastName, 
+            student.ID, 
+            student.YearLevel, 
+            student.Gender, 
+            student.CourseCode, 
+            student.profile_url, 
+            college.CollegeName
         FROM student
-        WHERE student.coursecode like %s
+        LEFT JOIN course on student.CourseCode=course.CourseCode
+        LEFT JOIN college on course.CollegeCode=college.CollegeCode
+        WHERE student.CourseCode LIKE %s OR college.CollegeName LIKE %s
         LIMIT 14
         OFFSET %s
-        """, (args, offset))
+        """, ('%' + args + '%','%' + args + '%', offset))
         result = cursor.fetchall()
         sql = """
         SELECT COUNT(*) AS row_count
         FROM student
-        WHERE student.coursecode like %s
+        LEFT JOIN course on student.CourseCode=course.CourseCode
+        LEFT JOIN college on course.CollegeCode=college.CollegeCode
+        WHERE student.CourseCode LIKE %s OR college.CollegeName LIKE %s
         """
-        cursor.execute(sql, ('%' + args + '%',))
+        cursor.execute(sql, ('%' + args + '%','%' + args + '%',))
+        count = cursor.fetchone()[0]
+        return result, count
+    
+    @classmethod
+    def queryStudentWithCourse(cls, args: str, current_page):
+        cursor = mysql.connection.cursor()
+        offset = 14 * (current_page - 1)
+        cursor.execute("""
+        SELECT 
+            student.FirstName, 
+            student.LastName, 
+            student.ID, 
+            student.YearLevel, 
+            student.Gender, 
+            student.CourseCode, 
+            student.profile_url, 
+            college.CollegeName
+        FROM student
+        LEFT JOIN course on student.CourseCode=course.CourseCode
+        LEFT JOIN college on course.CollegeCode=college.CollegeCode
+        WHERE student.coursecode like %s OR college.CollegeName like %s
+        LIMIT 14
+        OFFSET %s
+        """, (args, args, offset))
+        result = cursor.fetchall()
+        sql = """
+        SELECT COUNT(*) AS row_count
+        FROM student
+        LEFT JOIN course on student.CourseCode=course.CourseCode
+        LEFT JOIN college on course.CollegeCode=college.CollegeCode
+        WHERE student.coursecode like %s OR college.CollegeName like %s
+        """
+        cursor.execute(sql, ('%' + args + '%', '%' + args + '%'))
         count = cursor.fetchone()[0]
         return result, count
     
@@ -590,40 +795,108 @@ class DatabaseManager(object):
 
         if args == "firstname":
             query = """
-            SELECT *
+            SELECT 
+                student.FirstName, 
+                student.LastName, 
+                student.ID, 
+                student.YearLevel, 
+                student.Gender, 
+                student.CourseCode, 
+                student.profile_url, 
+                college.CollegeName
             FROM student
+            LEFT JOIN course on student.CourseCode=course.CourseCode
+            LEFT JOIN college on course.CollegeCode=college.CollegeCode
             ORDER BY firstname
             LIMIT 14
             OFFSET %s;
             """
         elif args == "lastname":
             query = """
-            SELECT *
+            SELECT 
+                student.FirstName, 
+                student.LastName, 
+                student.ID, 
+                student.YearLevel, 
+                student.Gender, 
+                student.CourseCode, 
+                student.profile_url, 
+                college.CollegeName
             FROM student
+            LEFT JOIN course on student.CourseCode=course.CourseCode
+            LEFT JOIN college on course.CollegeCode=college.CollegeCode
             ORDER BY lastname
             LIMIT 14
             OFFSET %s;
             """
         elif args == "id":
             query = """
-            SELECT *
+            SELECT 
+                student.FirstName, 
+                student.LastName, 
+                student.ID, 
+                student.YearLevel, 
+                student.Gender, 
+                student.CourseCode, 
+                student.profile_url, 
+                college.CollegeName
             FROM student
+            LEFT JOIN course on student.CourseCode=course.CourseCode
+            LEFT JOIN college on course.CollegeCode=college.CollegeCode
             ORDER BY id
             LIMIT 14
             OFFSET %s;
             """
         elif args == "yearlevel":
             query = """
-            SELECT *
+            SELECT 
+                student.FirstName, 
+                student.LastName, 
+                student.ID, 
+                student.YearLevel, 
+                student.Gender, 
+                student.CourseCode, 
+                student.profile_url, 
+                college.CollegeName
             FROM student
+            LEFT JOIN course on student.CourseCode=course.CourseCode
+            LEFT JOIN college on course.CollegeCode=college.CollegeCode
             ORDER BY yearlevel
+            LIMIT 14
+            OFFSET %s;
+            """
+        elif args == "course":
+            query = """
+            SELECT 
+                student.FirstName, 
+                student.LastName, 
+                student.ID, 
+                student.YearLevel, 
+                student.Gender, 
+                student.CourseCode, 
+                student.profile_url, 
+                college.CollegeName
+            FROM student
+            LEFT JOIN course on student.CourseCode=course.CourseCode
+            LEFT JOIN college on course.CollegeCode=college.CollegeCode
+            ORDER BY coursecode
             LIMIT 14
             OFFSET %s;
             """
         else:
             query = """
-            SELECT *
+            SELECT 
+                student.FirstName, 
+                student.LastName, 
+                student.ID, 
+                student.YearLevel, 
+                student.Gender, 
+                student.CourseCode, 
+                student.profile_url, 
+                college.CollegeName
             FROM student
+            LEFT JOIN course on student.CourseCode=course.CourseCode
+            LEFT JOIN college on course.CollegeCode=college.CollegeCode
             ORDER BY gender
             LIMIT 14
             OFFSET %s;

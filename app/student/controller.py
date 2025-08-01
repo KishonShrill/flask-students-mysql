@@ -68,6 +68,9 @@ def search(choices):
                 case "gender":
                     results, total_items = databaseModel.DatabaseManager.queryStudentGenderWithCourse(query,course,current_page)
                     total_pages = math.ceil(total_items / items_per_page)
+                case "course":
+                    results, total_items = databaseModel.DatabaseManager.queryStudentCourseWithCourse(query,course,current_page)
+                    total_pages = math.ceil(total_items / items_per_page)
                 case _:
                     return redirect(url_for("student.index"))
                 
@@ -88,6 +91,9 @@ def search(choices):
                     total_pages = math.ceil(total_items / items_per_page)
                 case "gender":
                     results, total_items = databaseModel.DatabaseManager.queryStudentGender(query, current_page)
+                    total_pages = math.ceil(total_items / items_per_page)
+                case "course":
+                    results, total_items = databaseModel.DatabaseManager.queryStudentCourse(query, current_page)
                     total_pages = math.ceil(total_items / items_per_page)
                 case _:
                     return redirect(url_for("student.index"))
@@ -141,33 +147,12 @@ def createSubmit():
         newYear = request.form.get('studentYear')
         newGender = request.form.get('studentGender')
         newCourse = request.form.get('studentCourse')
+        isStudentExist = False
 
         # Save the profile picture file and initialize cloudinary_url
         cloudinary_url: str = ""
         profile_picture = form.studentUpload.data
         
-
-        if profile_picture:
-            # Secure the filename
-            filename = secure_filename(profile_picture.filename)
-
-            # Upload to Cloudinary
-            try:
-                filename = os.path.splitext(filename)[0]
-                upload_result = cloudinary.uploader.upload(profile_picture, public_id=filename)
-                cloudinary_url = upload_result.get('secure_url')  # Get the URL of the uploaded image
-
-                # Modify the URL by inserting the transformation string
-                transformation = "c_auto,g_auto,h_500,w_500"
-                cloudinary_url = cloudinary_url.replace("/upload/", f"/upload/{transformation}/")
-                
-                # TODO: cloudinary_url into database
-                print(f"cloudinary_url: {cloudinary_url}")
-
-                flash(f"Profile picture uploaded successfully!", "success")
-            except Exception as e:
-                flash(f"An error occurred during file upload: {str(e)}", "danger")
-                return redirect(url_for('student.create'))
 
         # Input validation
         if not newFirstName or len(newFirstName) < 2 or len(newFirstName) > 199 or not name_regex.match(newFirstName):
@@ -182,8 +167,52 @@ def createSubmit():
         if not id_regex.match(newID):
             flash("ID must match with pattern ####-####, e.g. 1234-5678", "warning")
             return redirect(url_for('student.create'))
+        
+        if profile_picture == '':
+            profile_picture = "None"
 
-        isStudentExist = databaseModel.DatabaseManager.createStudent(newFirstName, newLastName, newID, newYear, newGender, newCourse, cloudinary_url)
+        if profile_picture:
+            
+            # Secure the filename
+            allowed_extensions = {'png', 'jpg', 'jpeg', 'webp'}  # Define allowed file extensions
+            filename = secure_filename(profile_picture.filename)
+            print(f"filename: {filename}") # TODO: Remove this later
+            extension = filename.rsplit('.', 1)[-1].lower()  # Get the file extension
+
+            # Check if the file extension is allowed
+            if extension not in allowed_extensions:
+                flash("Invalid file type! Please upload a PNG, JPG, or WEBP image.", "warning")
+                return redirect(url_for('student.create'))
+            
+            # Check the size of the file (optional, you can specify your size limit)
+            max_size = 25 * 1024 * 1024  # Example: 25MB
+            if len(profile_picture.read()) > max_size:
+                flash("File size exceeds the limit of 25MB.", "warning")
+                return redirect(url_for('student.create'))
+            
+            profile_picture.seek(0)  # Reset file pointer after reading
+            
+            # Upload to Cloudinary
+            try:
+                filename = os.path.splitext(filename)[0]
+                upload_result = cloudinary.uploader.upload(profile_picture, public_id=filename)
+                cloudinary_url = upload_result.get('secure_url')  # Get the URL of the uploaded image
+
+                # Modify the URL by inserting the transformation string
+                transformation = "c_auto,g_auto,h_500,w_500"
+                cloudinary_url = cloudinary_url.replace("/upload/", f"/upload/{transformation}/")
+                
+                # TODO: cloudinary_url into database
+                print(f"cloudinary_url: {cloudinary_url}")
+
+                isStudentExist = databaseModel.DatabaseManager.createStudent(newFirstName, newLastName, newID, newYear, newGender, newCourse, cloudinary_url)
+                flash(f"Profile picture uploaded successfully!", "success")
+                return redirect(url_for('student.index'))
+            except Exception as e:
+                flash(f"An error occurred during file upload: {str(e)}", "danger")
+                return redirect(url_for('student.create'))
+
+        isStudentExist = databaseModel.DatabaseManager.createStudent(newFirstName, newLastName, newID, newYear, newGender, newCourse, profile_picture)
 
         if isStudentExist == False:
             flash(f"Student {newID} already exists!", "warning")
@@ -233,6 +262,7 @@ def editSubmit(student_id):
     student_id = student_id or request.args.get('id')
     retrievedURL = databaseModel.DatabaseManager.queryStudentCloudinaryURL(student_id)
     old_cloudinary_url = retrievedURL[0][0]
+    isCommitSuccessful = False
 
     form = StudentForm()
 
@@ -252,7 +282,9 @@ def editSubmit(student_id):
         # Save the profile picture file and initialize cloudinary_url
         cloudinary_url: str = ""
         profile_picture = form.studentUpload.data
-        print(f"profile_picture: {profile_picture}")
+        if profile_picture == '':
+            profile_picture = "None"
+        print(f"profile_picture: {profile_picture} | old: {old_cloudinary_url}")
 
         # Delete profile picture if the checkbox is selected
         if delete_profile_picture and old_cloudinary_url:
@@ -268,9 +300,23 @@ def editSubmit(student_id):
                 print(f"Error deleting old image: {str(delete_error)}")
                 flash("An error occurred while trying to delete the profile picture.", "danger")
 
-        if profile_picture:
+        # Input validation
+        if not newFirstName or len(newFirstName) < 2 or len(newFirstName) > 199 or not name_regex.match(newFirstName):
+            flash("Invalid First Name: Only letters and spaces are allowed and must NOT be empty.", "warning")
+            return redirect(url_for('student.edit', student_id=student_id))
+        if not newLastName or len(newLastName) < 2 or len(newLastName) > 199 or not name_regex.match(newLastName):
+            flash("Invalid Last Name: Only letters and spaces are allowed and must NOT be empty.", "warning")
+            return redirect(url_for('student.edit', student_id=student_id))
+        if not newID or len(newID) != 9:
+            flash("ID is required and must be a 9-character ID.", "warning")
+            return redirect(url_for('student.edit', student_id=student_id))
+        if not id_regex.match(newID):
+            flash("ID must match with pattern ####-####, e.g. 1234-5678", "warning")
+            return redirect(url_for('student.edit', student_id=student_id))
+        
+        if profile_picture and profile_picture != "None":
             # Secure the filename
-            allowed_extensions = {'png', 'jpg', 'webp'}  # Define allowed file extensions
+            allowed_extensions = {'png', 'jpg', 'jpeg', 'webp'}  # Define allowed file extensions
             filename = secure_filename(profile_picture.filename)
             print(f"filename: {filename}") # TODO: Remove this later
             extension = filename.rsplit('.', 1)[-1].lower()  # Get the file extension
@@ -311,26 +357,14 @@ def editSubmit(student_id):
                         print(f"Error deleting old image: {str(delete_error)}")
 
                 print(f"cloudinary_url: {cloudinary_url}")
+                isCommitSuccessful = databaseModel.DatabaseManager.editStudent(oldID, newFirstName, newLastName, newID, newYear, newGender, newCourse, cloudinary_url)
                 flash(f"Profile picture updated successfully!", "success")
+                return redirect(url_for('student.index'))
             except Exception as e:
                 flash(f"An error occurred during file upload: {str(e)}", "danger")
                 return redirect(url_for('student.edit', student_id=student_id))
 
-        # Input validation
-        if not newFirstName or len(newFirstName) < 2 or len(newFirstName) > 199 or not name_regex.match(newFirstName):
-            flash("Invalid First Name: Only letters and spaces are allowed and must NOT be empty.", "warning")
-            return redirect(url_for('student.edit', student_id=student_id))
-        if not newLastName or len(newLastName) < 2 or len(newLastName) > 199 or not name_regex.match(newLastName):
-            flash("Invalid Last Name: Only letters and spaces are allowed and must NOT be empty.", "warning")
-            return redirect(url_for('student.edit', student_id=student_id))
-        if not newID or len(newID) != 9:
-            flash("ID is required and must be a 9-character ID.", "warning")
-            return redirect(url_for('student.edit', student_id=student_id))
-        if not id_regex.match(newID):
-            flash("ID must match with pattern ####-####, e.g. 1234-5678", "warning")
-            return redirect(url_for('student.edit', student_id=student_id))
-
-        isCommitSuccessful = databaseModel.DatabaseManager.editStudent(oldID, newFirstName, newLastName, newID, newYear, newGender, newCourse, cloudinary_url)
+        isCommitSuccessful = databaseModel.DatabaseManager.editStudent(oldID, newFirstName, newLastName, newID, newYear, newGender, newCourse, old_cloudinary_url)
 
         if isCommitSuccessful:
             flash(f"Student {newID} has been updated successfully!", "success")
